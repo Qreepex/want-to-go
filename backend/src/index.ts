@@ -1,12 +1,12 @@
-import { createApp } from './app.js';
-import { assertDatabaseReady } from './db/client.js';
-import './env.js';
+import { createApp } from "./app.js";
+import { assertDatabaseReady } from "./db/client.js";
+import "./env.js";
 
 async function start() {
   try {
     await assertDatabaseReady();
   } catch (error) {
-    console.error('Database connection failed during startup');
+    console.error("Database connection failed during startup");
     console.error(error);
     process.exit(1);
   }

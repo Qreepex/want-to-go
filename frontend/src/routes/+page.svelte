@@ -11,7 +11,6 @@
 </script>
 
 <svelte:head>
-	<title>Want To Go</title>
 	<meta
 		name="description"
 		content="A map-based travel bucket list with OAuth login, saved places, and geocoded search."
