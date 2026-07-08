@@ -72,14 +72,14 @@
 
 		const pinIcon = leafletModule.divIcon({
 			className: '',
-			html: '<div class="h-4 w-4 rounded-full border-2 border-white bg-cyan-400 shadow-lg shadow-cyan-950/60"></div>',
+			html: '<div class="h-4 w-4 rounded-full border-2 border-(--ink) bg-(--muted) shadow-md shadow-black/50"></div>',
 			iconSize: [16, 16],
 			iconAnchor: [8, 8]
 		});
 
 		const activeIcon = leafletModule.divIcon({
 			className: '',
-			html: '<div class="h-5 w-5 rounded-full border-2 border-white bg-amber-400 shadow-lg shadow-amber-950/60"></div>',
+			html: '<div class="h-5 w-5 rounded-full border-2 border-(--ink) bg-(--accent) shadow-lg shadow-black/60"></div>',
 			iconSize: [20, 20],
 			iconAnchor: [10, 10]
 		});
@@ -130,4 +130,21 @@
 	});
 </script>
 
-<div bind:this={container} class="relative z-0 h-full w-full bg-slate-950"></div>
+<div bind:this={container} class="relative z-0 h-full w-full bg-(--ink)"></div>
+
+<style>
+	:global(.leaflet-popup-content-wrapper),
+	:global(.leaflet-popup-tip) {
+		background: var(--surface);
+		color: var(--text);
+	}
+
+	:global(.leaflet-popup-content-wrapper) {
+		border-radius: 0.75rem;
+		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+	}
+
+	:global(.leaflet-container a.leaflet-popup-close-button) {
+		color: var(--muted);
+	}
+</style>

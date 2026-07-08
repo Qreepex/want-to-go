@@ -1,37 +1,25 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
-	function beginLogin() {
-		goto('/auth/login');
-	}
+	import Button from '$lib/components/ui/Button.svelte';
+	import { beginLogin } from '$lib/dashboard/actions';
 </script>
 
 <main class="flex min-h-screen items-center justify-center px-6 py-10">
-	<section
-		class="max-w-3xl rounded-4xl border border-white/10 bg-(--panel) p-8 shadow-2xl shadow-slate-950/40 backdrop-blur md:p-12"
-	>
-		<div
-			class="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs uppercase tracking-[0.35em] text-cyan-200"
-		>
-			<span class="h-2 w-2 rounded-full bg-amber-400"></span>
+	<section class="max-w-3xl rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40 md:p-12">
+		<div class="inline-flex items-center gap-2 rounded-full border border-(--border) px-3 py-1 text-xs text-(--muted)">
+			<span class="h-1.5 w-1.5 rounded-full bg-(--accent)"></span>
 			Want To Go
 		</div>
-		<h1 class="mt-6 max-w-2xl text-4xl font-semibold tracking-tight text-white md:text-6xl">
+		<h1 class="mt-6 max-w-2xl text-4xl font-semibold tracking-tight text-(--text) md:text-6xl">
 			Save your next trip on a map, not in a notes app.
 		</h1>
-		<p class="mt-4 max-w-xl text-base text-slate-300 md:text-lg">
+		<p class="mt-4 max-w-xl text-base text-(--muted) md:text-lg">
 			Search places, pin them to the map, and keep private travel ideas tied to your Authentik
 			account.
 		</p>
 		<div class="mt-8 flex flex-wrap gap-3">
-			<button
-				onclick={beginLogin}
-				class="rounded-full bg-amber-400 px-5 py-3 font-medium text-slate-950 transition hover:bg-amber-300"
-			>
-				Sign in with Authentik
-			</button>
+			<Button onclick={beginLogin}>Sign in with Authentik</Button>
 		</div>
-		<p class="mt-6 text-sm text-slate-400">
+		<p class="mt-6 text-sm text-(--muted-dim)">
 			OAuth users only store an ID and username. Place data stays private to your account.
 		</p>
 	</section>

@@ -2,31 +2,45 @@
 
 :root {
 	color-scheme: dark;
-	--page-bg: #050b14;
-	--page-bg-soft: #0a1220;
-	--panel: rgba(8, 13, 24, 0.78);
-	--panel-border: rgba(148, 163, 184, 0.16);
-	--text: #f1f5f9;
-	--muted: #94a3b8;
-	--accent: #f59e0b;
-	--accent-2: #22d3ee;
-	font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+	--ink: #262626;
+	--ink-soft: #1e1e1e;
+	--surface: #302e2c;
+	--surface-raised: #3a3733;
+	--surface-floating: rgba(48, 46, 44, 0.9);
+	--border: rgba(245, 241, 234, 0.09);
+	--border-strong: rgba(245, 241, 234, 0.2);
+	--text: #f4efe6;
+	--muted: #a39a8d;
+	--muted-dim: #6f675e;
+	--accent: #c2673f;
+	--accent-strong: #dd8355;
+	--accent-soft: rgba(194, 103, 63, 0.16);
+	--success: #93ab86;
+	--danger: #cf6b5f;
+	--font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+	--font-body:
+		-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+	font-family: var(--font-body);
 }
 
 html,
 body {
 	min-height: 100%;
-	background:
-		radial-gradient(circle at top left, rgba(34, 211, 238, 0.18), transparent 28%),
-		radial-gradient(circle at top right, rgba(245, 158, 11, 0.18), transparent 24%),
-		linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-soft) 100%);
+	background: var(--ink);
 	color: var(--text);
 	margin: 0;
 	overflow: hidden;
 }
 
 body {
-	font-family: var(--font-body, inherit);
+	font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--font-display);
+	letter-spacing: -0.01em;
 }
 
 a {
@@ -41,5 +55,19 @@ textarea {
 }
 
 ::selection {
-	background: rgba(245, 158, 11, 0.35);
+	background: var(--accent-soft);
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border-strong);
+	border-radius: 999px;
 }
