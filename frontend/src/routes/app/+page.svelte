@@ -12,6 +12,7 @@
 	import { initDashboard, pickMapLocation, viewPlace } from '$lib/dashboard/actions';
 	import { placeEditor } from '$lib/state/placeEditor.svelte';
 	import { placesStore } from '$lib/state/places.svelte';
+	import { placeViewer } from '$lib/state/placeViewer.svelte';
 	import { session } from '$lib/state/session.svelte';
 	import { onMount } from 'svelte';
 
@@ -36,6 +37,7 @@
 			<LeafletMap
 				places={placesStore.items}
 				selection={placeEditor.selection}
+				focusPlace={placeViewer.place}
 				onPick={pickMapLocation}
 				onSelectPlace={viewPlace}
 			/>

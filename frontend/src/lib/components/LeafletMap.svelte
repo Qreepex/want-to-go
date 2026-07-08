@@ -12,19 +12,24 @@
 	let {
 		places = [],
 		selection = null,
+		focusPlace = null,
 		onPick = () => {},
 		onSelectPlace = () => {}
 	} = $props<{
 		places?: PlaceRecord[];
 		selection?: MapSelection;
+		focusPlace?: PlaceRecord | null;
 		onPick?: (selection: { latitude: number; longitude: number }) => void;
 		onSelectPlace?: (place: PlaceRecord) => void;
 	}>();
+
+	const FOCUS_ZOOM = 11;
 
 	let container: HTMLDivElement | null = null;
 	let map: import('leaflet').Map | null = null;
 	let markerLayer: import('leaflet').LayerGroup | null = null;
 	let leafletModule: typeof import('leaflet') | null = null;
+	let lastFocusedPlace: PlaceRecord | null = null;
 
 	onMount(() => {
 		let active = true;
@@ -139,6 +144,18 @@
 		}
 
 		renderLayers();
+	});
+
+	$effect(() => {
+		const place = focusPlace;
+
+		if (!map || !place || place === lastFocusedPlace) {
+			return;
+		}
+
+		lastFocusedPlace = place;
+
+		map.setView([place.latitude, place.longitude], FOCUS_ZOOM, { animate: true });
 	});
 </script>
 
