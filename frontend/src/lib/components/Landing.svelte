@@ -30,7 +30,7 @@
 				account.
 			</p>
 			<div class="mt-8 flex flex-wrap gap-3">
-				<Button onclick={openApp}>Get started</Button>
+				<Button onclick={beginLogin}>Get started</Button>
 			</div>
 			<p class="mt-6 text-sm text-(--muted-dim)">
 				OAuth users only store an ID and username. Place data stays private to your account.

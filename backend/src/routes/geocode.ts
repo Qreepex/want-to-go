@@ -231,8 +231,6 @@ geocodeRouter.get("/reverse", async (request, response) => {
       "ASC", // Den am nächsten gelegenen Ort zuerst
     );
 
-    console.log(nearbyLocations);
-
     // Wenn ein Ort im Umkreis von 15m gefunden wurde -> Cache Hit!
     if (nearbyLocations && nearbyLocations.length > 0) {
       const closestMember = nearbyLocations[0][0]; // Der Name/ID des Members
