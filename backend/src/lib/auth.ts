@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
+import { AuthTokenPayload } from "./types.js";
 
-export interface AuthTokenPayload {
-  userId: string;
-  username: string;
-}
+
 
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
