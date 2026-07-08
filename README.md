@@ -20,11 +20,6 @@
 - Confirm Delete when deleting a saved place (modal)
 - Filter nach Länder, Kontinente, Liste
 
-- Spinner wenn /app geladen wird
-
-- Landing Page
-- legal pages
-
 - Multiple Lists
 - Share lists with friends
 - Notification Bar wo dann share von anderen angezeigt wird

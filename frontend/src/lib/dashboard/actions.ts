@@ -1,4 +1,4 @@
-import { goto } from '$app/navigation';
+import { loginUrl } from '$lib/api';
 import { reverseGeocodeLocation } from '$lib/api/geo';
 import { createPinnedSelection, createPlaceDraft } from '$lib/dashboard/helpers';
 import { locationSearch } from '$lib/state/locationSearch.svelte';
@@ -23,7 +23,7 @@ export async function initDashboard(): Promise<void> {
 }
 
 export function beginLogin(): void {
-	goto('/auth/login');
+	window.location.href = loginUrl();
 }
 
 export function signOut(): void {
