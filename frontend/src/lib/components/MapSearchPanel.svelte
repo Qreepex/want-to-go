@@ -8,7 +8,6 @@
 	<Panel floating>
 		<div class="flex items-center justify-between gap-3">
 			<h2 class="text-base font-semibold text-(--text)">Find a place</h2>
-			<span class="text-xs text-(--muted-dim)">search</span>
 		</div>
 		<div class="mt-3 rounded-xl border border-(--border) bg-(--ink-soft) px-3.5 py-2.5">
 			<input
@@ -25,7 +24,7 @@
 				{#if locationSearch.isSearching}
 					<p class="px-2.5 py-2 text-sm text-(--muted)">Searching…</p>
 				{/if}
-				{#each locationSearch.results as result (result.displayName)}
+				{#each locationSearch.results as result, i (result.displayName + i)}
 					<button
 						onclick={() => selectSearchResult(result)}
 						class="w-full rounded-lg px-2.5 py-2.5 text-left transition hover:bg-white/5"
