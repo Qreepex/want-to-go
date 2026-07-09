@@ -5,6 +5,7 @@ import { db } from "../db/client.js";
 import { users } from "../db/schema.js";
 import "../env.js";
 import { signAuthToken, verifyAuthToken } from "../lib/auth.js";
+import { ensureDefaultList } from "../lib/list-access.js";
 
 const issuerDiscoveryPath = "/.well-known/openid-configuration";
 
@@ -239,6 +240,7 @@ authRouter.get("/callback", async (request, response) => {
   const preferredUsername =
     userInfo.preferred_username ?? userInfo.name ?? userInfo.sub;
   const savedUser = await ensureUser(userInfo.sub, preferredUsername);
+  await ensureDefaultList(savedUser.id);
 
   const token = signAuthToken({
     userId: savedUser.id,

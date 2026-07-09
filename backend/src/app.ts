@@ -4,6 +4,7 @@ import express from "express";
 import { generalRateLimiter } from "./middleware/rate-limit.js";
 import authRouter from "./routes/auth.js";
 import geocodeRouter from "./routes/geocode.js";
+import listsRouter from "./routes/lists.js";
 import placesRouter from "./routes/places.js";
 import statsRouter from "./routes/stats.js";
 import uploadsRouter from "./routes/uploads.js";
@@ -28,6 +29,7 @@ export function createApp() {
 
   app.use("/auth", authRouter);
   app.use("/geo", geocodeRouter);
+  app.use("/lists", listsRouter);
   app.use("/places", placesRouter);
   app.use("/stats", statsRouter);
   app.use("/uploads", uploadsRouter);

@@ -2,6 +2,7 @@
 	import { uploadImage } from '$lib/api';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
+	import Select from '$lib/components/ui/Select.svelte';
 	import TextArea from '$lib/components/ui/TextArea.svelte';
 	import TextField from '$lib/components/ui/TextField.svelte';
 	import { closeEditor, savePlace } from '$lib/dashboard/actions';
@@ -12,6 +13,7 @@
 		parseUrlList,
 		removeLine
 	} from '$lib/dashboard/helpers';
+	import { listsStore } from '$lib/state/lists.svelte';
 	import { placeEditor } from '$lib/state/placeEditor.svelte';
 	import { session } from '$lib/state/session.svelte';
 	import { statusStore } from '$lib/state/status.svelte';
@@ -21,6 +23,10 @@
 	);
 
 	const images = $derived(parseUrlList(placeEditor.draft.imageUrls) ?? []);
+
+	const listOptions = $derived(
+		listsStore.writableLists.map((list) => ({ value: list.id, label: list.name }))
+	);
 
 	let isUploadingImage = $state(false);
 	let fileInput = $state<HTMLInputElement | null>(null);
@@ -134,6 +140,7 @@
 			</div>
 
 			<div class="mt-4 grid gap-3">
+				<Select label="List" bind:value={placeEditor.draft.listId} options={listOptions} />
 				<div data-paste-passthrough>
 					<TextField
 						label="Name"

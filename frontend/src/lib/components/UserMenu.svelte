@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { signOut } from '$lib/dashboard/actions';
+	import { openListManager, signOut } from '$lib/dashboard/actions';
 	import { getUserInitial } from '$lib/dashboard/helpers';
 	import { session } from '$lib/state/session.svelte';
 	import { onMount } from 'svelte';
@@ -52,8 +52,17 @@
 				{session.user?.username}
 			</div>
 			<button
-				onclick={signOut}
+				onclick={() => {
+					open = false;
+					openListManager();
+				}}
 				class="mt-3 flex w-full items-center justify-center rounded-xl bg-white/5 px-4 py-2.5 text-sm text-(--text) transition hover:bg-white/8"
+			>
+				Manage lists
+			</button>
+			<button
+				onclick={signOut}
+				class="mt-2 flex w-full items-center justify-center rounded-xl bg-white/5 px-4 py-2.5 text-sm text-(--text) transition hover:bg-white/8"
 			>
 				Sign out
 			</button>

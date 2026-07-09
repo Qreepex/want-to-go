@@ -1,3 +1,4 @@
+import { getContinent } from '$lib/dashboard/continents';
 import type { PlacePayload, PlaceRecord, PlaceSearchResult } from '$lib/types';
 
 export type MapSelection = {
@@ -5,6 +6,7 @@ export type MapSelection = {
 	displayName?: string;
 	latitude: number;
 	longitude: number;
+	countryCode?: string;
 };
 
 export type PlaceDraft = {
@@ -12,6 +14,7 @@ export type PlaceDraft = {
 	description: string;
 	imageUrls: string;
 	socialUrls: string;
+	listId: string;
 };
 
 export function getUserInitial(username: string | null | undefined): string {
@@ -22,36 +25,41 @@ export function formatCoordinate(value: number, digits = 4): string {
 	return value.toFixed(digits);
 }
 
-export function createEmptyPlaceDraft(): PlaceDraft {
+export function createEmptyPlaceDraft(listId = ''): PlaceDraft {
 	return {
 		name: '',
 		description: '',
 		imageUrls: '',
-		socialUrls: ''
+		socialUrls: '',
+		listId
 	};
 }
 
 export function createPlaceDraft(
-	place: Pick<PlaceRecord, 'name' | 'description' | 'imageUrls' | 'socialUrls'> | PlaceSearchResult
+	place: Pick<PlaceRecord, 'name' | 'description' | 'imageUrls' | 'socialUrls'> | PlaceSearchResult,
+	listId = ''
 ): PlaceDraft {
 	return {
 		name: place.name,
 		description: 'description' in place ? (place.description ?? '') : '',
 		imageUrls: 'imageUrls' in place && place.imageUrls ? place.imageUrls.join('\n') : '',
-		socialUrls: 'socialUrls' in place && place.socialUrls ? place.socialUrls.join('\n') : ''
+		socialUrls: 'socialUrls' in place && place.socialUrls ? place.socialUrls.join('\n') : '',
+		listId
 	};
 }
 
 export function createPinnedSelection(
 	latitude: number,
 	longitude: number,
-	name = 'New place'
+	name = 'New place',
+	countryCode?: string
 ): MapSelection {
 	return {
 		name,
 		displayName: 'Dropped pin',
 		latitude,
-		longitude
+		longitude,
+		countryCode
 	};
 }
 
@@ -59,7 +67,7 @@ export function buildPlacePayload(
 	selection: MapSelection | null,
 	draft: PlaceDraft
 ): PlacePayload | null {
-	if (!selection) {
+	if (!selection || !draft.listId) {
 		return null;
 	}
 
@@ -73,10 +81,33 @@ export function buildPlacePayload(
 		name: finalName,
 		latitude: selection.latitude,
 		longitude: selection.longitude,
+		listId: draft.listId,
 		description: draft.description.trim() ? draft.description.trim() : null,
+		countryCode: selection.countryCode ?? null,
 		imageUrls: parseUrlList(draft.imageUrls),
 		socialUrls: parseUrlList(draft.socialUrls)
 	};
+}
+
+export function filterPlaces(
+	items: PlaceRecord[],
+	filters: { listId: string | null; countryCode: string | null; continent: string | null }
+): PlaceRecord[] {
+	return items.filter((place) => {
+		if (filters.listId && place.listId !== filters.listId) {
+			return false;
+		}
+
+		if (filters.countryCode && place.countryCode !== filters.countryCode) {
+			return false;
+		}
+
+		if (filters.continent && getContinent(place.countryCode) !== filters.continent) {
+			return false;
+		}
+
+		return true;
+	});
 }
 
 export function parseUrlList(value: string): string[] | null {

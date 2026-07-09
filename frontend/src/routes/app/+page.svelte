@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LeafletMap from '$lib/components/LeafletMap.svelte';
+	import ListManagerModal from '$lib/components/ListManagerModal.svelte';
 	import Login from '$lib/components/Login.svelte';
 	import FloatingStack from '$lib/components/layout/FloatingStack.svelte';
 	import PageShell from '$lib/components/layout/PageShell.svelte';
@@ -10,7 +11,9 @@
 	import StatusToast from '$lib/components/StatusToast.svelte';
 	import UserMenu from '$lib/components/UserMenu.svelte';
 	import { initDashboard, pickMapLocation, viewPlace } from '$lib/dashboard/actions';
+	import { filterPlaces } from '$lib/dashboard/helpers';
 	import { placeEditor } from '$lib/state/placeEditor.svelte';
+	import { placeFilters } from '$lib/state/placeFilters.svelte';
 	import { placesStore } from '$lib/state/places.svelte';
 	import { placeViewer } from '$lib/state/placeViewer.svelte';
 	import { session } from '$lib/state/session.svelte';
@@ -35,7 +38,7 @@
 	<PageShell>
 		{#snippet background()}
 			<LeafletMap
-				places={placesStore.items}
+				places={filterPlaces(placesStore.items, placeFilters)}
 				selection={placeEditor.selection}
 				focusPlace={placeViewer.place}
 				onPick={pickMapLocation}
@@ -53,5 +56,6 @@
 		<UserMenu />
 		<PlaceEditorPanel />
 		<PlaceViewerPanel />
+		<ListManagerModal />
 	</PageShell>
 {/if}

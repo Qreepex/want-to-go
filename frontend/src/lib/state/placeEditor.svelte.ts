@@ -27,10 +27,11 @@ class PlaceEditorStore {
 			name: place.name,
 			displayName: place.name,
 			latitude: place.latitude,
-			longitude: place.longitude
+			longitude: place.longitude,
+			countryCode: place.countryCode ?? undefined
 		};
 		this.editingPlace = place;
-		this.draft = createPlaceDraft(place);
+		this.draft = createPlaceDraft(place, place.listId);
 	}
 
 	close(): void {
