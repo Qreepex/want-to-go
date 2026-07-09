@@ -9,6 +9,7 @@
 	import { closeEditor, savePlace } from '$lib/dashboard/actions';
 	import {
 		appendLines,
+		cleanSocialUrl,
 		extractUrls,
 		formatCoordinate,
 		getAllTags,
@@ -26,6 +27,7 @@
 	);
 
 	const images = $derived(parseUrlList(placeEditor.draft.imageUrls) ?? []);
+	const socialUrls = $derived(parseUrlList(placeEditor.draft.socialUrls) ?? []);
 
 	const listOptions = $derived(
 		listsStore.writableLists.map((list) => ({ value: list.id, label: list.name }))
@@ -33,6 +35,7 @@
 
 	let isUploadingImage = $state(false);
 	let fileInput = $state<HTMLInputElement | null>(null);
+	let urlInput = $state('');
 
 	async function handlePaste(event: ClipboardEvent) {
 		const clipboardData = event.clipboardData;
@@ -77,11 +80,35 @@
 			? `${existingDescription}\n\n${text}`
 			: text;
 
-		const urls = extractUrls(text);
+		const urls = extractUrls(text).map(cleanSocialUrl);
 
 		if (urls.length) {
 			placeEditor.draft.socialUrls = appendLines(placeEditor.draft.socialUrls, urls);
 		}
+	}
+
+	function addUrl(): void {
+		const value = urlInput.trim();
+
+		if (!value) {
+			return;
+		}
+
+		placeEditor.draft.socialUrls = appendLines(placeEditor.draft.socialUrls, [
+			cleanSocialUrl(value)
+		]);
+		urlInput = '';
+	}
+
+	function handleUrlInputKeydown(event: KeyboardEvent): void {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			addUrl();
+		}
+	}
+
+	function removeUrl(url: string): void {
+		placeEditor.draft.socialUrls = removeLine(placeEditor.draft.socialUrls, url);
 	}
 
 	async function uploadPastedImage(file: File): Promise<void> {
@@ -192,11 +219,44 @@
 					/>
 				</div>
 				<div data-paste-passthrough>
-					<TextArea
-						label="URLs"
-						bind:value={placeEditor.draft.socialUrls}
-						placeholder="TikTok, Instagram, or a post link"
-					/>
+					<span class="text-xs tracking-wide text-(--muted)">URLs</span>
+					<div class="mt-1.5 flex gap-2">
+						<input
+							type="text"
+							bind:value={urlInput}
+							onkeydown={handleUrlInputKeydown}
+							placeholder="Paste a TikTok, Instagram, or other link"
+							class="w-full rounded-xl border border-(--border) bg-(--ink-soft) px-3.5 py-2.5 text-(--text) outline-none placeholder:text-(--muted-dim) focus:border-(--accent)/60"
+						/>
+						<Button onclick={addUrl} size="sm" class="shrink-0">Add</Button>
+					</div>
+					{#if socialUrls.length}
+						<ul class="mt-2 grid gap-1.5">
+							{#each socialUrls as url (url)}
+								<li
+									class="flex items-center justify-between gap-2 rounded-lg border border-(--border) px-2.5 py-1.5"
+								>
+									<a
+										href={url}
+										target="_blank"
+										rel="noreferrer noopener"
+										title={url}
+										class="min-w-0 truncate text-sm text-(--accent-strong) underline decoration-(--accent-strong)/40 underline-offset-2 hover:decoration-(--accent-strong)"
+									>
+										{url.replace(/^https?:\/\//, '')}
+									</a>
+									<button
+										type="button"
+										onclick={() => removeUrl(url)}
+										aria-label="Remove URL"
+										class="shrink-0 text-(--muted) transition hover:text-(--text)"
+									>
+										×
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
 				<TagInput
 					label="Tags"

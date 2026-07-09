@@ -174,6 +174,30 @@ export function removeLine(existing: string, value: string): string {
 		.join('\n');
 }
 
+const TRACKED_URL_HOSTS = ['tiktok.com', 'instagram.com'];
+
+export function cleanSocialUrl(rawUrl: string): string {
+	let url: URL;
+
+	try {
+		url = new URL(rawUrl);
+	} catch {
+		return rawUrl;
+	}
+
+	const hostname = url.hostname.replace(/^www\./, '');
+	const isTracked = TRACKED_URL_HOSTS.some(
+		(host) => hostname === host || hostname.endsWith(`.${host}`)
+	);
+
+	if (isTracked) {
+		url.search = '';
+		url.hash = '';
+	}
+
+	return url.toString();
+}
+
 export function getUrlDomain(url: string): string {
 	try {
 		return new URL(url).hostname.replace(/^www\./, '');
