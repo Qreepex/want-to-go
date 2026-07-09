@@ -15,5 +15,8 @@ frontend/build/
 frontend/.wrangler/
 frontend/.dev.vars
 
+infra/k8s/backend-secret.yaml
+infra/**/*.pem
+
 .DS_Store
 Thumbs.db
