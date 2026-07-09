@@ -1,0 +1,14 @@
+name = "want-to-go-frontend"
+compatibility_date = "2026-07-09"
+
+# Static-assets-only Worker: the app is a client-rendered SPA (see +layout.ts,
+# ssr = false), so no Worker script is needed to render anything. Cloudflare
+# serves the prebuilt files directly and falls back to index.html for
+# unmatched paths (e.g. /lists/join/<token>) so client-side routing can
+# take over.
+[assets]
+directory = "./build"
+not_found_handling = "single-page-application"
+
+# Set a custom domain/route here once one is provisioned, e.g.:
+# routes = [{ pattern = "want-to-go.example.com", custom_domain = true }]

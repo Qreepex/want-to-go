@@ -193,7 +193,7 @@
 				</div>
 				<div data-paste-passthrough>
 					<TextArea
-						label="Social URLs"
+						label="URLs"
 						bind:value={placeEditor.draft.socialUrls}
 						placeholder="TikTok, Instagram, or a post link"
 					/>

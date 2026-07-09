@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 .env.*
+!.env.*.example
 
 backend/node_modules/
 backend/dist/
@@ -10,6 +11,9 @@ backend/drizzle/meta/
 frontend/node_modules/
 frontend/.svelte-kit
 frontend/dist/
+frontend/build/
+frontend/.wrangler/
+frontend/.dev.vars
 
 .DS_Store
 Thumbs.db
