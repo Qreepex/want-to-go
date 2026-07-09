@@ -27,7 +27,10 @@ redis.call("SET", KEYS[1], slot, "PX", minInterval * 10)
 return math.max(slot - now, 0)
 `;
 
-redis.defineCommand("reserveThrottleSlot", { lua: RESERVE_SLOT_SCRIPT });
+redis.defineCommand("reserveThrottleSlot", {
+  numberOfKeys: 1,
+  lua: RESERVE_SLOT_SCRIPT,
+});
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
