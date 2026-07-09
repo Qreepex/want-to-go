@@ -236,7 +236,7 @@ geocodeRouter.get("/reverse", async (request, response) => {
 
     // Wenn ein Ort im Umkreis von 15m gefunden wurde -> Cache Hit!
     if (nearbyLocations && nearbyLocations.length > 0) {
-      const closestMember = nearbyLocations[0][0]; // Der Name/ID des Members
+      const closestMember = (nearbyLocations[0] as unknown[])[0]; // Der Name/ID des Members
 
       // Hole die strukturierten Daten aus dem zugehörigen Hash
       const hashData = await redis.hgetall(`geo:data:${closestMember}`);

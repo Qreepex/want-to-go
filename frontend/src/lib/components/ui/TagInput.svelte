@@ -76,7 +76,7 @@
 			onfocus={() => (isFocused = true)}
 			onblur={() => setTimeout(() => (isFocused = false), 120)}
 			placeholder={value.length ? '' : placeholder}
-			class="min-w-[6rem] flex-1 bg-transparent text-sm text-(--text) outline-none placeholder:text-(--muted-dim)"
+			class="min-w-24 flex-1 bg-transparent text-sm text-(--text) outline-none placeholder:text-(--muted-dim)"
 		/>
 	</div>
 
