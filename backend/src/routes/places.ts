@@ -339,6 +339,11 @@ const updatePlace: RequestHandler = async (request, response) => {
     await setPlaceTags(existingPlace.id, nextTags);
   }
 
+  const removedImageKeys = (existingPlace.imageUrls ?? []).filter(
+    (key) => !(nextImageUrls ?? []).includes(key),
+  );
+  await cleanUpOrphanedImages(existingPlace.userId, removedImageKeys);
+
   response.json({ place: withTags(await resolvePlaceImages(updatedPlace), nextTags) });
 };
 
