@@ -17,8 +17,16 @@ export default defineConfig({
 			// deployed as a static SPA to Cloudflare Workers (see wrangler.toml). The
 			// `fallback` page handles dynamic routes like /lists/join/[token] client-side.
 			// See https://svelte.dev/docs/kit/single-page-apps
+			//
+			// `/`, `/privacy`, and `/legal-notice` are prerendered (see their +page.ts
+			// files) so crawlers get real og:*/twitter:* meta without running JS. The
+			// fallback is named `200.html` (unused by Cloudflare) instead of `index.html`
+			// so that prerendering doesn't get clobbered by the SPA fallback file -
+			// Cloudflare's `single-page-application` not_found_handling always serves the
+			// real (prerendered) `index.html` for unmatched routes, which still works as
+			// an SPA shell for client-rendered routes like /app.
 			adapter: adapter({
-				fallback: 'index.html'
+				fallback: '200.html'
 			})
 		})
 	]

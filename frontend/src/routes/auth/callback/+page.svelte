@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { getBackendUrl } from '$lib/api/client';
 	import { setStoredToken } from '$lib/api/token';
+	import Seo from '$lib/components/Seo.svelte';
 	import { onMount } from 'svelte';
 
 	let status = $state('Completing sign-in...');
@@ -31,12 +32,12 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Signing in</title>
-</svelte:head>
+<Seo title="Signing in" noindex />
 
 <main class="flex min-h-screen items-center justify-center px-6 text-center">
-	<div class="max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40">
+	<div
+		class="max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40"
+	>
 		<p class="text-xs text-(--accent-strong)">Want To Go</p>
 		<h1 class="mt-4 text-3xl font-semibold text-(--text)">{status}</h1>
 		<p class="mt-3 text-sm text-(--muted)">

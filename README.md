@@ -3,7 +3,5 @@
 ## Missing Features
   
 - Themes
-
-## Bugs
-
-- [ ] x
+- Orte wo man schon war markieren
+- /wrapped

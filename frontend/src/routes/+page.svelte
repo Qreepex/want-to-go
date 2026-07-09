@@ -2,7 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { getStoredToken } from '$lib/api/token';
 	import Landing from '$lib/components/Landing.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { siteName } from '$lib/config/site';
 	import { onMount } from 'svelte';
 
 	let checkingAuth = $state(true);
@@ -16,13 +18,7 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Want To Go</title>
-	<meta
-		name="description"
-		content="A map-based travel bucket list with OAuth login, saved places, and geocoded search."
-	/>
-</svelte:head>
+<Seo title={siteName} />
 
 {#if checkingAuth}
 	<main class="flex h-screen items-center justify-center">

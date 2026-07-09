@@ -8,6 +8,7 @@
 	import PlaceEditorPanel from '$lib/components/PlaceEditorPanel.svelte';
 	import PlaceViewerPanel from '$lib/components/PlaceViewerPanel.svelte';
 	import PlacesSidebar from '$lib/components/PlacesSidebar.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import StatusToast from '$lib/components/StatusToast.svelte';
 	import UserMenu from '$lib/components/UserMenu.svelte';
 	import { initDashboard, pickMapLocation, viewPlace } from '$lib/dashboard/actions';
@@ -24,13 +25,7 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Want To Go</title>
-	<meta
-		name="description"
-		content="A map-based travel bucket list with OAuth login, saved places, and geocoded search."
-	/>
-</svelte:head>
+<Seo title="Your map" description="Sign in to see your saved places, pinned on the map." noindex />
 
 {#if !session.token}
 	<Login />

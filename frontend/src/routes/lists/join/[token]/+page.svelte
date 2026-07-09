@@ -4,6 +4,7 @@
 	import { loginUrl } from '$lib/api';
 	import { setPendingListJoin } from '$lib/api/pendingListJoin';
 	import { joinSharedList } from '$lib/dashboard/actions';
+	import Seo from '$lib/components/Seo.svelte';
 	import { session } from '$lib/state/session.svelte';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
@@ -34,12 +35,16 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Joining list</title>
-</svelte:head>
+<Seo
+	title="You're invited to a shared list"
+	description="Join a shared travel list on Want To Go — a map-based travel bucket list."
+	noindex
+/>
 
 <main class="flex min-h-screen items-center justify-center px-6 text-center">
-	<div class="max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40">
+	<div
+		class="max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40"
+	>
 		<p class="text-xs text-(--accent-strong)">Want To Go</p>
 		<h1 class="mt-4 text-3xl font-semibold text-(--text)">{status}</h1>
 		<p class="mt-3 text-sm text-(--muted)">

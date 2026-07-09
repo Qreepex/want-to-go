@@ -1,11 +1,9 @@
 <script lang="ts">
+	import Seo from '$lib/components/Seo.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
 </script>
 
-<svelte:head>
-	<title>Legal Notice · Want To Go</title>
-	<meta name="description" content="Legal notice / Impressum for Want To Go." />
-</svelte:head>
+<Seo title="Legal Notice" description="Legal notice / Impressum for Want To Go." />
 
 <main class="flex h-screen justify-center overflow-y-auto px-6 py-10">
 	<div class="w-full max-w-3xl">
@@ -44,9 +42,9 @@
 			<section class="space-y-2">
 				<h2 class="text-lg font-semibold text-(--text)">Disclaimer</h2>
 				<p class="text-sm text-(--muted) md:text-base">
-					This is a personal, non-commercial project. Despite careful checks, we accept no
-					liability for the content of external links; the operators of linked pages are solely
-					responsible for their content.
+					This is a personal, non-commercial project. Despite careful checks, we accept no liability
+					for the content of external links; the operators of linked pages are solely responsible
+					for their content.
 				</p>
 			</section>
 		</Panel>
