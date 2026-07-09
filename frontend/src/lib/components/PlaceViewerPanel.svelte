@@ -1,12 +1,14 @@
 <script lang="ts">
+	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
-	import { closeViewer, editViewedPlace } from '$lib/dashboard/actions';
+	import { closeViewer, editViewedPlace, removePlace } from '$lib/dashboard/actions';
 	import { countryCodeToFlagEmoji, getUrlDomain } from '$lib/dashboard/helpers';
 	import { placeViewer } from '$lib/state/placeViewer.svelte';
 
 	const flag = $derived(countryCodeToFlagEmoji(placeViewer.countryCode));
 
 	let lightboxUrl = $state<string | null>(null);
+	let showDeleteConfirm = $state(false);
 </script>
 
 {#if placeViewer.place}
@@ -22,12 +24,55 @@
 					{/if}
 					<h2 class="truncate text-lg font-semibold text-(--text)">{place.name}</h2>
 				</div>
-				<button
-					onclick={closeViewer}
-					class="shrink-0 text-sm text-(--muted) transition hover:text-(--text)"
-				>
-					Close
-				</button>
+				<div class="flex shrink-0 items-center gap-1">
+					<button
+						type="button"
+						onclick={editViewedPlace}
+						aria-label="Edit place"
+						class="rounded-full p-1.5 text-(--muted) transition hover:bg-white/7 hover:text-(--text)"
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4"
+						>
+							<path d="M12 20h9" />
+							<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+						</svg>
+					</button>
+					<button
+						type="button"
+						onclick={() => (showDeleteConfirm = true)}
+						aria-label="Delete place"
+						class="rounded-full p-1.5 text-(--muted) transition hover:bg-(--danger)/10 hover:text-(--danger)"
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4"
+						>
+							<path d="M3 6h18" />
+							<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+							<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+							<line x1="10" x2="10" y1="11" y2="17" />
+							<line x1="14" x2="14" y1="11" y2="17" />
+						</svg>
+					</button>
+					<button
+						onclick={closeViewer}
+						class="ml-1 text-sm text-(--muted) transition hover:text-(--text)"
+					>
+						Close
+					</button>
+				</div>
 			</div>
 
 			{#if place.description}
@@ -92,15 +137,21 @@
 					{/each}
 				</ul>
 			{/if}
-
-			<button
-				onclick={editViewedPlace}
-				class="mt-4 w-full rounded-full border border-(--border) py-2 text-xs uppercase tracking-wide text-(--muted) transition hover:border-(--border-strong) hover:text-(--text)"
-			>
-				Edit place
-			</button>
 		</Panel>
 	</div>
+
+	{#if showDeleteConfirm}
+		<ConfirmDialog
+			title="Delete place?"
+			message={`Remove "${place.name}" from your list. This can't be undone.`}
+			confirmLabel="Delete"
+			onConfirm={() => {
+				showDeleteConfirm = false;
+				void removePlace(place);
+			}}
+			onCancel={() => (showDeleteConfirm = false)}
+		/>
+	{/if}
 {/if}
 
 {#if lightboxUrl}
