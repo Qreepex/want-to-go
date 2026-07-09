@@ -1,4 +1,4 @@
-name = "want-to-go-frontend"
+name = "want-to-go"
 compatibility_date = "2026-07-09"
 
 # Static-assets-only Worker: the app is a client-rendered SPA (see +layout.ts,
