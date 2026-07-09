@@ -4,6 +4,7 @@
 	import { loginUrl } from '$lib/api';
 	import { setPendingListJoin } from '$lib/api/pendingListJoin';
 	import { joinSharedList } from '$lib/dashboard/actions';
+	import { session } from '$lib/state/session.svelte';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
@@ -23,7 +24,9 @@
 			return;
 		}
 
-		joinSharedList(token)
+		session
+			.restore()
+			.then(() => joinSharedList(token))
 			.then(() => goto('/app'))
 			.catch((error) => {
 				status = error instanceof Error ? error.message : 'Unable to join list.';

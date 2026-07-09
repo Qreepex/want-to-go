@@ -291,7 +291,7 @@ export async function leaveList(list: ListRecord): Promise<void> {
 
 export async function joinSharedList(joinToken: string): Promise<void> {
 	if (!session.token) {
-		return;
+		throw new Error('You must be signed in to join a list');
 	}
 
 	const joined = await joinList(session.token, joinToken);
