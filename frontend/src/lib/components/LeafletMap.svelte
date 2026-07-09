@@ -41,8 +41,15 @@
 				return;
 			}
 
+			const maxLat = 85.0511287798;
 			map = leafletModule
-				.map(container, { zoomControl: false, preferCanvas: true })
+				.map(container, {
+					zoomControl: false,
+					preferCanvas: true,
+					minZoom: 2,
+					maxBounds: leafletModule.latLngBounds([-maxLat, -Infinity], [maxLat, Infinity]),
+					maxBoundsViscosity: 1.0
+				})
 				.setView([20, 0], 2);
 			leafletModule
 				.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
