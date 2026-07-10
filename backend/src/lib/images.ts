@@ -9,7 +9,7 @@ import { deleteImageFromS3 } from "./s3.js";
  * a place is removed so its uploaded images don't linger in the bucket.
  *
  * `userId` must be the place's creator (its `userId` column), not whoever
- * triggered the deletion — a shared-list collaborator can delete a place they
+ * triggered the deletion - a shared-list collaborator can delete a place they
  * don't own, but orphan-checking still has to run against the original
  * uploader's other places.
  */

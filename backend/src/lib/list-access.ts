@@ -41,7 +41,12 @@ export async function getAccessibleListIds(userId: string): Promise<string[]> {
     .from(listMembers)
     .where(eq(listMembers.userId, userId));
 
-  return [...new Set([...owned.map((row) => row.id), ...memberOf.map((row) => row.id)])];
+  return [
+    ...new Set([
+      ...owned.map((row) => row.id),
+      ...memberOf.map((row) => row.id),
+    ]),
+  ];
 }
 
 export function canCreateInList(role: ListAccessRole): boolean {

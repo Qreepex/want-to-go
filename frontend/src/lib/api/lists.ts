@@ -14,11 +14,7 @@ export async function createList(token: string, name: string): Promise<ListRecor
 	return result.list;
 }
 
-export async function renameList(
-	token: string,
-	listId: string,
-	name: string
-): Promise<ListRecord> {
+export async function renameList(token: string, listId: string, name: string): Promise<ListRecord> {
 	const result = await apiRequest<{ list: ListRecord }>(`/lists/${listId}`, token, {
 		method: 'PATCH',
 		body: JSON.stringify({ name })

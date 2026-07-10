@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { getStoredToken } from '$lib/api/token';
+	import { page } from '$app/state';
 	import { loginUrl } from '$lib/api';
 	import { setPendingListJoin } from '$lib/api/pendingListJoin';
-	import { joinSharedList } from '$lib/dashboard/actions';
+	import { getStoredToken } from '$lib/api/token';
 	import Seo from '$lib/components/Seo.svelte';
+	import { joinSharedList } from '$lib/dashboard/actions';
 	import { session } from '$lib/state/session.svelte';
-	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
 	let status = $state('Joining list...');
@@ -37,7 +37,7 @@
 
 <Seo
 	title="You're invited to a shared list"
-	description="Join a shared travel list on Want To Go — a map-based travel bucket list."
+	description="Join a shared travel list on Want To Go - a map-based travel bucket list."
 	noindex
 />
 

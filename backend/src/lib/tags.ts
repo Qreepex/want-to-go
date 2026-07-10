@@ -60,7 +60,10 @@ export async function getTagsForPlaces(
   return map;
 }
 
-export async function setPlaceTags(placeId: string, tags: string[]): Promise<void> {
+export async function setPlaceTags(
+  placeId: string,
+  tags: string[],
+): Promise<void> {
   await db.delete(placeTags).where(eq(placeTags.placeId, placeId));
 
   if (tags.length) {

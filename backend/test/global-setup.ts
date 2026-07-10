@@ -33,7 +33,9 @@ async function getFreePort(): Promise<number> {
 function runDocker(args: string[]): void {
   const result = spawnSync("docker", args, { encoding: "utf8" });
   if (result.status !== 0) {
-    throw new Error(`docker ${args.join(" ")} failed: ${result.stderr || result.stdout}`);
+    throw new Error(
+      `docker ${args.join(" ")} failed: ${result.stderr || result.stdout}`,
+    );
   }
 }
 
@@ -62,7 +64,9 @@ async function waitForPostgres(connectionString: string): Promise<void> {
     }
   }
 
-  throw new Error(`Postgres did not become ready in time: ${String(lastError)}`);
+  throw new Error(
+    `Postgres did not become ready in time: ${String(lastError)}`,
+  );
 }
 
 async function waitForRedis(url: string): Promise<void> {
@@ -70,7 +74,10 @@ async function waitForRedis(url: string): Promise<void> {
   let lastError: unknown;
 
   while (Date.now() < deadline) {
-    const client = new Redis(url, { lazyConnect: true, retryStrategy: () => null });
+    const client = new Redis(url, {
+      lazyConnect: true,
+      retryStrategy: () => null,
+    });
     try {
       await client.connect();
       await client.ping();

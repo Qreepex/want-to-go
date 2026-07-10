@@ -48,7 +48,9 @@
 			class="absolute right-0 mt-3 w-64 rounded-2xl border border-(--border) bg-(--surface-floating) p-3 shadow-xl shadow-black/40 backdrop-blur-md"
 		>
 			<p class="px-2 text-xs text-(--muted-dim)">Signed in as</p>
-			<div class="mt-1.5 rounded-xl border border-(--border) bg-white/2 px-3 py-2.5 text-sm text-(--text)">
+			<div
+				class="mt-1.5 rounded-xl border border-(--border) bg-white/2 px-3 py-2.5 text-sm text-(--text)"
+			>
 				{session.user?.username}
 			</div>
 			<button

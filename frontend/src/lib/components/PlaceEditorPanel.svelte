@@ -269,11 +269,7 @@
 						I've already been here
 					</label>
 					{#if placeEditor.draft.alreadyVisited}
-						<TextField
-							label="Visited on"
-							type="date"
-							bind:value={placeEditor.draft.visitedAt}
-						/>
+						<TextField label="Visited on" type="date" bind:value={placeEditor.draft.visitedAt} />
 						<TextArea
 							label="Visit notes"
 							bind:value={placeEditor.draft.visitNotes}

@@ -8,7 +8,11 @@ import {
 	setShareLink
 } from '$lib/api/lists';
 import { clearPendingListJoin, getPendingListJoin } from '$lib/api/pendingListJoin';
-import { createEmptyPlaceDraft, createPinnedSelection, createPlaceDraft } from '$lib/dashboard/helpers';
+import {
+	createEmptyPlaceDraft,
+	createPinnedSelection,
+	createPlaceDraft
+} from '$lib/dashboard/helpers';
 import { listManager } from '$lib/state/listManager.svelte';
 import { listsStore } from '$lib/state/lists.svelte';
 import { locationSearch } from '$lib/state/locationSearch.svelte';
@@ -80,7 +84,10 @@ export function selectSearchResult(result: PlaceSearchResult): void {
 	statusStore.clear();
 }
 
-export async function pickMapLocation(selection: { latitude: number; longitude: number }): Promise<void> {
+export async function pickMapLocation(selection: {
+	latitude: number;
+	longitude: number;
+}): Promise<void> {
 	placeViewer.close();
 	statusStore.clear();
 
@@ -181,11 +188,7 @@ function resyncViewedPlace(): void {
 	}
 }
 
-export async function logVisit(
-	placeId: string,
-	visitedAt: string,
-	notes: string
-): Promise<void> {
+export async function logVisit(placeId: string, visitedAt: string, notes: string): Promise<void> {
 	if (!session.token) {
 		return;
 	}

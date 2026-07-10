@@ -44,7 +44,9 @@
 					<div class="mb-3">
 						<p class="px-1 pb-1.5 text-xs font-semibold tracking-wide text-(--muted)">{year}</p>
 						{#each visits as visit (visit.id)}
-							<div class="mb-2 flex items-start gap-3 rounded-xl border border-(--border) bg-white/2 px-3 py-2.5">
+							<div
+								class="mb-2 flex items-start gap-3 rounded-xl border border-(--border) bg-white/2 px-3 py-2.5"
+							>
 								{#if visit.place.imageUrls?.[0]}
 									<img
 										src={visit.place.imageUrls[0]}

@@ -23,7 +23,7 @@ export type UnifiedGeocodeResult = {
   displayName: string;
   latitude: number;
   longitude: number;
-  // Every result a provider hands back is required to resolve a country —
+  // Every result a provider hands back is required to resolve a country -
   // providers filter/reject results that can't, so callers never have to
   // handle a missing country code.
   countryCode: string;

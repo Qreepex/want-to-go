@@ -26,7 +26,9 @@ export async function compressImage(
       };
     case "image/png":
       return {
-        buffer: await image.png({ compressionLevel: 9, palette: true }).toBuffer(),
+        buffer: await image
+          .png({ compressionLevel: 9, palette: true })
+          .toBuffer(),
         contentType: mimetype,
       };
     case "image/webp":

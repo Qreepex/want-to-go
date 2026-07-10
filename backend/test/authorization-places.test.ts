@@ -36,11 +36,20 @@ describe("places authorization (list role matrix)", () => {
     await addListMember(listId, editor.id, "edit");
   });
 
-  async function createPlace(token: string, overrides: Record<string, unknown> = {}) {
+  async function createPlace(
+    token: string,
+    overrides: Record<string, unknown> = {},
+  ) {
     return request(getApp())
       .post("/places")
       .set(authHeader(token))
-      .send({ name: "Test place", latitude: 1, longitude: 1, listId, ...overrides });
+      .send({
+        name: "Test place",
+        latitude: 1,
+        longitude: 1,
+        listId,
+        ...overrides,
+      });
   }
 
   it("owner can create, read, update, and delete a place", async () => {
@@ -48,7 +57,9 @@ describe("places authorization (list role matrix)", () => {
     expect(created.status).toBe(201);
     const placeId = created.body.place.id;
 
-    const got = await request(getApp()).get(`/places/${placeId}`).set(authHeader(owner.token));
+    const got = await request(getApp())
+      .get(`/places/${placeId}`)
+      .set(authHeader(owner.token));
     expect(got.status).toBe(200);
 
     const updated = await request(getApp())

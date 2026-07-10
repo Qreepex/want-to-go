@@ -1,13 +1,13 @@
-import { NominatimAddress, UnifiedGeocodeResult } from "./types.js";
-import { throttle } from "./throttle.js";
 import { consumeDailyQuota } from "./daily-limit.js";
+import { throttle } from "./throttle.js";
+import { NominatimAddress, UnifiedGeocodeResult } from "./types.js";
 
 const USER_AGENT_HEADERS = {
   "user-agent": "WantToGo/1.0 (https://go.schiemann.work)",
   Referer: "https://go.schiemann.work",
 };
 
-// Each provider is a courtesy-hosted public API (no API key) — keep calls to
+// Each provider is a courtesy-hosted public API (no API key) - keep calls to
 // at most one per second, shared across all requests/processes.
 const MIN_CALL_INTERVAL_MS = 1000;
 
@@ -141,7 +141,9 @@ const photonProvider: GeocodeProvider = {
     if (!res.ok) throw new Error(`Photon error ${res.status}`);
 
     const data = (await res.json()) as { features: any[] };
-    const entry = data.features.find((feature) => feature.properties.countrycode);
+    const entry = data.features.find(
+      (feature) => feature.properties.countrycode,
+    );
     if (!entry) throw new Error("No results with a country code");
 
     const props = entry.properties;
@@ -294,7 +296,10 @@ export async function withGeocodeFallback<T>(
 
       return result;
     } catch (err) {
-      console.warn(`Geocode provider "${provider.name}" failed, trying next...`, err);
+      console.warn(
+        `Geocode provider "${provider.name}" failed, trying next...`,
+        err,
+      );
     }
   }
 

@@ -1,10 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	let {
-		side = 'left',
-		children
-	} = $props<{
+	let { side = 'left', children } = $props<{
 		side?: 'left' | 'right';
 		children: Snippet;
 	}>();

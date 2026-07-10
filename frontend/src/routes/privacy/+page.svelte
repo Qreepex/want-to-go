@@ -34,9 +34,9 @@
 			<section class="space-y-2">
 				<h2 class="text-lg font-semibold text-(--text)">2. Account &amp; sign-in</h2>
 				<p class="text-sm text-(--muted) md:text-base">
-					Want To Go uses OAuth-based sign-in (Authentik). We only store an account ID and username
-					&mdash; we never collect or store your email address or a password. Your session is
-					authenticated with a token stored in your browser's local storage.
+					Want To Go uses OAuth-based sign-in. We only store an account ID and username &mdash; we
+					never collect or store your email address or a password. Your session is authenticated
+					with a token stored in your browser's local storage.
 				</p>
 			</section>
 

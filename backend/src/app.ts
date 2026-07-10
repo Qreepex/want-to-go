@@ -11,7 +11,12 @@ import statsRouter from "./routes/stats.js";
 import uploadsRouter from "./routes/uploads.js";
 import visitsRouter from "./routes/visits.js";
 
-const jsonErrorHandler: ErrorRequestHandler = (error, _request, response, next) => {
+const jsonErrorHandler: ErrorRequestHandler = (
+  error,
+  _request,
+  response,
+  next,
+) => {
   if (response.headersSent) {
     next(error);
     return;

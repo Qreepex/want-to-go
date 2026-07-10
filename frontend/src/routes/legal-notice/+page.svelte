@@ -19,15 +19,15 @@
 				<h2 class="text-lg font-semibold text-(--text)">Information according to &sect; 5 TMG</h2>
 				<p class="text-sm text-(--muted) md:text-base">
 					Ben Schiemann<br />
-					<span class="text-(--muted-dim)">[Add your postal address]</span>
+					<span class="text-(--muted-dim)">Reinbeker Weg 70, 21465 Wentorf</span>
 				</p>
 			</section>
 
 			<section class="space-y-2">
 				<h2 class="text-lg font-semibold text-(--text)">Contact</h2>
 				<p class="text-sm text-(--muted) md:text-base">
-					Email: <a href="mailto:ai@qreepex.xyz" class="text-(--accent-strong) underline"
-						>ai@qreepex.xyz</a
+					Email: <a href="mailto:go@schiemann.work" class="text-(--accent-strong) underline"
+						>go@schiemann.work</a
 					>
 				</p>
 			</section>

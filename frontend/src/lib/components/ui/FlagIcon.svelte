@@ -4,9 +4,7 @@
 		class?: string;
 	}>();
 
-	const code = $derived(
-		countryCode && countryCode.length === 2 ? countryCode.toLowerCase() : null
-	);
+	const code = $derived(countryCode && countryCode.length === 2 ? countryCode.toLowerCase() : null);
 </script>
 
 {#if code}

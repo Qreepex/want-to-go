@@ -173,7 +173,10 @@ authRouter.get(
   "/callback",
   validate({ query: oauthCallbackQuerySchema }),
   async (request, response) => {
-    const { code, state } = request.query as unknown as { code: string; state: string };
+    const { code, state } = request.query as unknown as {
+      code: string;
+      state: string;
+    };
     const storedState = request.cookies["want-to-go-oauth-state"];
     const codeVerifier = request.cookies["want-to-go-oauth-verifier"];
 

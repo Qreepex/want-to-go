@@ -50,7 +50,9 @@
 			{/if}
 		</div>
 		{#if lastVisitedAt}
-			<span class="rounded-full border border-(--border) bg-(--accent-soft) px-2 py-0.5 text-xs text-(--accent-strong)">
+			<span
+				class="rounded-full border border-(--border) bg-(--accent-soft) px-2 py-0.5 text-xs text-(--accent-strong)"
+			>
 				{place.visits.length > 1
 					? `Visited ${place.visits.length}× · last ${formatShortDate(lastVisitedAt)}`
 					: `Visited ${formatShortDate(lastVisitedAt)}`}

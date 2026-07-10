@@ -25,9 +25,9 @@
 
 	let showTimeline = $state(false);
 
-	const visitedCountryCodes = $derived(
-		[...new Set(visitsStore.items.map((visit) => visit.place.countryCode).filter(Boolean))] as string[]
-	);
+	const visitedCountryCodes = $derived([
+		...new Set(visitsStore.items.map((visit) => visit.place.countryCode).filter(Boolean))
+	] as string[]);
 
 	onMount(() => {
 		void initDashboard();
@@ -56,7 +56,9 @@
 		<FloatingStack side="left">
 			<MapSearchPanel />
 			{#if placeFilters.visited === 'been'}
-				<div class="pointer-events-auto flex gap-1.5 rounded-full border border-(--border) bg-(--surface-floating) p-1 text-sm shadow-xl shadow-black/40 backdrop-blur-md">
+				<div
+					class="pointer-events-auto flex gap-1.5 rounded-full border border-(--border) bg-(--surface-floating) p-1 text-sm shadow-xl shadow-black/40 backdrop-blur-md"
+				>
 					<button
 						type="button"
 						onclick={() => (showTimeline = false)}

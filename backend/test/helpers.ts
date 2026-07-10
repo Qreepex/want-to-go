@@ -23,7 +23,11 @@ export async function createTestList(ownerId: string, name = "Test list") {
   return list;
 }
 
-export async function addListMember(listId: string, userId: string, role: ShareableRole) {
+export async function addListMember(
+  listId: string,
+  userId: string,
+  role: ShareableRole,
+) {
   await db.insert(listMembers).values({ listId, userId, role });
 }
 

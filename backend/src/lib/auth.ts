@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken";
 import { AuthTokenPayload } from "./types.js";
 
-
-
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
 
@@ -18,5 +16,7 @@ export function signAuthToken(payload: AuthTokenPayload): string {
 }
 
 export function verifyAuthToken(token: string): AuthTokenPayload {
-  return jwt.verify(token, getJwtSecret(), { algorithms: ["HS256"] }) as AuthTokenPayload;
+  return jwt.verify(token, getJwtSecret(), {
+    algorithms: ["HS256"],
+  }) as AuthTokenPayload;
 }

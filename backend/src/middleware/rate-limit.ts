@@ -35,10 +35,16 @@ function createRateLimiter({
 }: RateLimiterConfig): RequestHandler {
   return async (request, response, next) => {
     try {
-      const ipResult = await checkRateLimit(`${name}:ip:${request.ip}`, ipRules);
+      const ipResult = await checkRateLimit(
+        `${name}:ip:${request.ip}`,
+        ipRules,
+      );
 
       if (!ipResult.allowed) {
-        response.set("Retry-After", String(Math.ceil(ipResult.retryAfterMs / 1000)));
+        response.set(
+          "Retry-After",
+          String(Math.ceil(ipResult.retryAfterMs / 1000)),
+        );
         response.status(429).json({ error: "Too many requests" });
         return;
       }
@@ -46,7 +52,10 @@ function createRateLimiter({
       const userId = getOptionalUserId(request);
 
       if (userId) {
-        const userResult = await checkRateLimit(`${name}:user:${userId}`, userRules);
+        const userResult = await checkRateLimit(
+          `${name}:user:${userId}`,
+          userRules,
+        );
 
         if (!userResult.allowed) {
           response.set(

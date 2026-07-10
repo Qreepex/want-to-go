@@ -15,12 +15,16 @@ describe("requireAuth", () => {
   });
 
   it("rejects a non-Bearer Authorization header", async () => {
-    const res = await request(getApp()).get("/places").set("Authorization", "Basic abc123");
+    const res = await request(getApp())
+      .get("/places")
+      .set("Authorization", "Basic abc123");
     expect(res.status).toBe(401);
   });
 
   it("rejects an empty Bearer token", async () => {
-    const res = await request(getApp()).get("/places").set("Authorization", "Bearer ");
+    const res = await request(getApp())
+      .get("/places")
+      .set("Authorization", "Bearer ");
     expect(res.status).toBe(401);
   });
 
@@ -63,7 +67,9 @@ describe("requireAuth", () => {
 
   it("accepts a validly signed token and attaches the user", async () => {
     const user = await createTestUser();
-    const res = await request(getApp()).get("/places").set(authHeader(user.token));
+    const res = await request(getApp())
+      .get("/places")
+      .set(authHeader(user.token));
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ places: [] });
   });

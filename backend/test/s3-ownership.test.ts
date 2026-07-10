@@ -4,11 +4,18 @@ import request from "supertest";
 import { db } from "../src/db/client.js";
 import { images } from "../src/db/schema.js";
 import { extractOwnImageKey } from "../src/lib/s3.js";
-import { authHeader, createTestList, createTestUser, getApp } from "./helpers.js";
+import {
+  authHeader,
+  createTestList,
+  createTestUser,
+  getApp,
+} from "./helpers.js";
 
 describe("extractOwnImageKey (pure logic)", () => {
   it("treats a bare (non-URL) string as a candidate key as-is", () => {
-    expect(extractOwnImageKey("places/user/abc.jpg")).toBe("places/user/abc.jpg");
+    expect(extractOwnImageKey("places/user/abc.jpg")).toBe(
+      "places/user/abc.jpg",
+    );
   });
 
   it("extracts the key from a matching virtual-hosted-style bucket URL", () => {

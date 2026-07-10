@@ -13,8 +13,10 @@ export function getGeocodeCacheKey(query: string): string {
   return `geo:search:${normalized}`;
 }
 
-
-export function getCoordinatesDataKey(latitude: number, longitude: number): string {
+export function getCoordinatesDataKey(
+  latitude: number,
+  longitude: number,
+): string {
   const fixedLat = roundCoordinate(latitude);
   const fixedLng = roundCoordinate(longitude);
 

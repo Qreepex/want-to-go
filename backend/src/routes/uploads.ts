@@ -30,11 +30,14 @@ const ALLOWED_MIME_EXTENSIONS: Record<string, string> = {
   "image/avif": "avif",
 };
 
-const handleUploadErrors: ErrorRequestHandler = (error, _request, response, next) => {
+const handleUploadErrors: ErrorRequestHandler = (
+  error,
+  _request,
+  response,
+  next,
+) => {
   if (error instanceof MulterError && error.code === "LIMIT_FILE_SIZE") {
-    response
-      .status(413)
-      .json({ error: "Image exceeds the 1MB upload limit" });
+    response.status(413).json({ error: "Image exceeds the 1MB upload limit" });
     return;
   }
 
@@ -52,7 +55,9 @@ const enforceUploadQuota: RequestHandler = async (request, response, next) => {
   if (imageCount >= MAX_IMAGES_PER_USER) {
     response
       .status(403)
-      .json({ error: `You can only store up to ${MAX_IMAGES_PER_USER} images` });
+      .json({
+        error: `You can only store up to ${MAX_IMAGES_PER_USER} images`,
+      });
     return;
   }
 
@@ -79,7 +84,8 @@ const uploadImage: RequestHandler = async (request, response) => {
   // anything, so re-derive the type from the file's actual magic bytes and
   // require it to agree with the declared allowlist before decoding it with sharp.
   const detectedType = await fileTypeFromBuffer(file.buffer);
-  const detectedExtension = detectedType && ALLOWED_MIME_EXTENSIONS[detectedType.mime];
+  const detectedExtension =
+    detectedType && ALLOWED_MIME_EXTENSIONS[detectedType.mime];
 
   if (!detectedExtension) {
     response.status(400).json({ error: "Unsupported image type" });
@@ -91,10 +97,14 @@ const uploadImage: RequestHandler = async (request, response) => {
   try {
     const compressed = await compressImage(file.buffer, detectedType.mime);
     const uploadBuffer =
-      compressed.buffer.length < file.buffer.length ? compressed.buffer : file.buffer;
+      compressed.buffer.length < file.buffer.length
+        ? compressed.buffer
+        : file.buffer;
 
     await uploadImageToS3(key, uploadBuffer, compressed.contentType);
-    await db.insert(images).values({ userId: authRequest.authUser.userId, key });
+    await db
+      .insert(images)
+      .values({ userId: authRequest.authUser.userId, key });
     const url = await getPresignedImageUrl(key);
     response.status(201).json({ url });
   } catch (error) {

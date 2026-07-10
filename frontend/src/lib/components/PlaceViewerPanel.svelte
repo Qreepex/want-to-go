@@ -5,7 +5,13 @@
 	import FlagIcon from '$lib/components/ui/FlagIcon.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
 	import TextField from '$lib/components/ui/TextField.svelte';
-	import { closeViewer, editViewedPlace, logVisit, removePlace, removeVisit } from '$lib/dashboard/actions';
+	import {
+		closeViewer,
+		editViewedPlace,
+		logVisit,
+		removePlace,
+		removeVisit
+	} from '$lib/dashboard/actions';
 	import { getUrlDomain } from '$lib/dashboard/helpers';
 	import { placeViewer } from '$lib/state/placeViewer.svelte';
 
@@ -150,7 +156,9 @@
 				{#if place.visits.length}
 					<ul class="mt-2 grid gap-1.5">
 						{#each place.visits as visit (visit.id)}
-							<li class="flex items-start justify-between gap-2 rounded-lg border border-(--border) px-2.5 py-1.5">
+							<li
+								class="flex items-start justify-between gap-2 rounded-lg border border-(--border) px-2.5 py-1.5"
+							>
 								<div class="min-w-0">
 									<p class="text-sm text-(--text)">{formatVisitDate(visit.visitedAt)}</p>
 									{#if visit.notes}
@@ -175,7 +183,11 @@
 				{#if showLogVisit}
 					<div class="mt-3 grid gap-2">
 						<TextField label="Visited on" type="date" bind:value={newVisitDate} />
-						<TextField label="Notes (optional)" bind:value={newVisitNotes} placeholder="How was it?" />
+						<TextField
+							label="Notes (optional)"
+							bind:value={newVisitNotes}
+							placeholder="How was it?"
+						/>
 						<Button onclick={() => submitVisit(place.id)} disabled={isLoggingVisit} size="sm">
 							{isLoggingVisit ? 'Saving…' : 'Save visit'}
 						</Button>

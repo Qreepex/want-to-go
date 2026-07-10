@@ -39,7 +39,9 @@ geocodeRouter.get(
       return;
     }
 
-    const results = await withGeocodeFallback((provider) => provider.search(query));
+    const results = await withGeocodeFallback((provider) =>
+      provider.search(query),
+    );
 
     if (!results || results.length === 0) {
       response.status(502).json({ error: "All geocoding services failed" });
@@ -84,7 +86,9 @@ geocodeRouter.get(
     );
 
     if (!result) {
-      response.status(502).json({ error: "All reverse geocoding services failed" });
+      response
+        .status(502)
+        .json({ error: "All reverse geocoding services failed" });
       return;
     }
 

@@ -19,7 +19,12 @@ import {
   uuidParamSchema,
 } from "../lib/validation-schemas.js";
 import { extractOwnImageKey, resolveImageDisplayUrl } from "../lib/s3.js";
-import { getPlaceTags, getTagsForPlaces, normalizeTags, setPlaceTags } from "../lib/tags.js";
+import {
+  getPlaceTags,
+  getTagsForPlaces,
+  normalizeTags,
+  setPlaceTags,
+} from "../lib/tags.js";
 import { getPlaceVisits, getVisitsForPlaces } from "../lib/visits.js";
 import type { Visit } from "../db/schema.js";
 
@@ -124,7 +129,10 @@ const listPlaces: RequestHandler = async (request, response) => {
 
   const placeIds = savedPlaces.map((place) => place.id);
   const tagsByPlace = await getTagsForPlaces(placeIds);
-  const visitsByPlace = await getVisitsForPlaces(placeIds, authRequest.authUser.userId);
+  const visitsByPlace = await getVisitsForPlaces(
+    placeIds,
+    authRequest.authUser.userId,
+  );
 
   const resolvedPlaces = await Promise.all(
     savedPlaces.map(async (place) =>
@@ -160,7 +168,9 @@ const getPlaceById: RequestHandler = async (request, response) => {
 
   const tags = await getPlaceTags(place.id);
   const visits = await getPlaceVisits(place.id, authRequest.authUser.userId);
-  response.json({ place: withDetails(await resolvePlaceImages(place), tags, visits) });
+  response.json({
+    place: withDetails(await resolvePlaceImages(place), tags, visits),
+  });
 };
 
 const createPlace: RequestHandler = async (request, response) => {
@@ -197,8 +207,10 @@ const createPlace: RequestHandler = async (request, response) => {
       description: description ?? null,
       countryCode: countryCode ?? null,
       imageUrls:
-        (await normalizeImageUrls(imageUrls ?? imageUrl, authRequest.authUser.userId)) ??
-        null,
+        (await normalizeImageUrls(
+          imageUrls ?? imageUrl,
+          authRequest.authUser.userId,
+        )) ?? null,
       socialUrls: normalizeUrlArray(socialUrls ?? socialLink) ?? null,
     })
     .returning();
@@ -208,7 +220,13 @@ const createPlace: RequestHandler = async (request, response) => {
 
   response
     .status(201)
-    .json({ place: withDetails(await resolvePlaceImages(createdPlace), normalizedTags, []) });
+    .json({
+      place: withDetails(
+        await resolvePlaceImages(createdPlace),
+        normalizedTags,
+        [],
+      ),
+    });
 };
 
 const updatePlace: RequestHandler = async (request, response) => {
@@ -237,7 +255,10 @@ const updatePlace: RequestHandler = async (request, response) => {
     return;
   }
 
-  const access = await getListAccess(authRequest.authUser.userId, existingPlace.listId);
+  const access = await getListAccess(
+    authRequest.authUser.userId,
+    existingPlace.listId,
+  );
 
   if (!access || !canModifyPlacesInList(access.role)) {
     response.status(404).json({ error: "Place not found" });
@@ -247,7 +268,10 @@ const updatePlace: RequestHandler = async (request, response) => {
   let nextListId = existingPlace.listId;
 
   if (listId !== undefined && listId !== existingPlace.listId) {
-    const targetAccess = await getListAccess(authRequest.authUser.userId, listId);
+    const targetAccess = await getListAccess(
+      authRequest.authUser.userId,
+      listId,
+    );
 
     if (!targetAccess || !canCreateInList(targetAccess.role)) {
       response.status(404).json({ error: "List not found" });
@@ -260,7 +284,10 @@ const updatePlace: RequestHandler = async (request, response) => {
   const nextImageUrls =
     imageUrls === undefined && imageUrl === undefined
       ? existingPlace.imageUrls
-      : await normalizeImageUrls(imageUrls ?? imageUrl, authRequest.authUser.userId);
+      : await normalizeImageUrls(
+          imageUrls ?? imageUrl,
+          authRequest.authUser.userId,
+        );
 
   const [updatedPlace] = await db
     .update(places)
@@ -269,8 +296,10 @@ const updatePlace: RequestHandler = async (request, response) => {
       name: name ?? existingPlace.name,
       latitude: latitude ?? existingPlace.latitude,
       longitude: longitude ?? existingPlace.longitude,
-      description: description === undefined ? existingPlace.description : description,
-      countryCode: countryCode === undefined ? existingPlace.countryCode : countryCode,
+      description:
+        description === undefined ? existingPlace.description : description,
+      countryCode:
+        countryCode === undefined ? existingPlace.countryCode : countryCode,
       imageUrls: nextImageUrls,
       socialUrls:
         socialUrls === undefined && socialLink === undefined
@@ -281,7 +310,9 @@ const updatePlace: RequestHandler = async (request, response) => {
     .returning();
 
   const nextTags =
-    tags === undefined ? await getPlaceTags(existingPlace.id) : normalizeTags(tags);
+    tags === undefined
+      ? await getPlaceTags(existingPlace.id)
+      : normalizeTags(tags);
 
   if (tags !== undefined) {
     await setPlaceTags(existingPlace.id, nextTags);
@@ -292,8 +323,17 @@ const updatePlace: RequestHandler = async (request, response) => {
   );
   await cleanUpOrphanedImages(existingPlace.userId, removedImageKeys);
 
-  const visits = await getPlaceVisits(existingPlace.id, authRequest.authUser.userId);
-  response.json({ place: withDetails(await resolvePlaceImages(updatedPlace), nextTags, visits) });
+  const visits = await getPlaceVisits(
+    existingPlace.id,
+    authRequest.authUser.userId,
+  );
+  response.json({
+    place: withDetails(
+      await resolvePlaceImages(updatedPlace),
+      nextTags,
+      visits,
+    ),
+  });
 };
 
 const deletePlace: RequestHandler = async (request, response) => {
@@ -309,7 +349,10 @@ const deletePlace: RequestHandler = async (request, response) => {
     return;
   }
 
-  const access = await getListAccess(authRequest.authUser.userId, existingPlace.listId);
+  const access = await getListAccess(
+    authRequest.authUser.userId,
+    existingPlace.listId,
+  );
 
   if (!access || !canModifyPlacesInList(access.role)) {
     response.status(404).json({ error: "Place not found" });

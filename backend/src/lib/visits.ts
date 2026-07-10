@@ -2,7 +2,10 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import { db } from "../db/client.js";
 import { visits, type Visit } from "../db/schema.js";
 
-export async function getPlaceVisits(placeId: string, userId: string): Promise<Visit[]> {
+export async function getPlaceVisits(
+  placeId: string,
+  userId: string,
+): Promise<Visit[]> {
   return db
     .select()
     .from(visits)

@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
 import request from "supertest";
+import { describe, expect, it, vi } from "vitest";
 import { getApp } from "./helpers.js";
 
 vi.mock("../src/lib/geocode-providers.js", () => ({
@@ -32,12 +32,14 @@ describe("geocode rate limiting", () => {
     const statuses: number[] = [];
 
     for (let i = 0; i < 6; i += 1) {
-      const res = await request(app).get("/geo/search").query({ q: `query-${i}` });
+      const res = await request(app)
+        .get("/geo/search")
+        .query({ q: `query-${i}` });
       statuses.push(res.status);
     }
 
     // Every response must be either a genuine success or a rate-limit
-    // rejection — never a 500, which would indicate a bug in the request
+    // rejection - never a 500, which would indicate a bug in the request
     // pipeline (e.g. the validate middleware) rather than real rate limiting.
     for (const status of statuses) {
       expect([200, 429]).toContain(status);

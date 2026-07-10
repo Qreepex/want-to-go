@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
-import { authHeader, createTestList, createTestUser, getApp } from "./helpers.js";
+import {
+  authHeader,
+  createTestList,
+  createTestUser,
+  getApp,
+} from "./helpers.js";
 
 describe("input validation", () => {
   it("rejects an out-of-range latitude when creating a place", async () => {
@@ -10,7 +15,12 @@ describe("input validation", () => {
     const res = await request(getApp())
       .post("/places")
       .set(authHeader(user.token))
-      .send({ name: "Somewhere", latitude: 999, longitude: 1, listId: list.id });
+      .send({
+        name: "Somewhere",
+        latitude: 999,
+        longitude: 1,
+        listId: list.id,
+      });
 
     expect(res.status).toBe(400);
   });
@@ -22,7 +32,12 @@ describe("input validation", () => {
     const res = await request(getApp())
       .post("/places")
       .set(authHeader(user.token))
-      .send({ name: "Somewhere", latitude: 1, longitude: -999, listId: list.id });
+      .send({
+        name: "Somewhere",
+        latitude: 1,
+        longitude: -999,
+        listId: list.id,
+      });
 
     expect(res.status).toBe(400);
   });
@@ -34,7 +49,12 @@ describe("input validation", () => {
     const res = await request(getApp())
       .post("/places")
       .set(authHeader(user.token))
-      .send({ name: "x".repeat(500), latitude: 1, longitude: 1, listId: list.id });
+      .send({
+        name: "x".repeat(500),
+        latitude: 1,
+        longitude: 1,
+        listId: list.id,
+      });
 
     expect(res.status).toBe(400);
   });
@@ -45,7 +65,12 @@ describe("input validation", () => {
     const res = await request(getApp())
       .post("/places")
       .set(authHeader(user.token))
-      .send({ name: "Somewhere", latitude: 1, longitude: 1, listId: "not-a-uuid" });
+      .send({
+        name: "Somewhere",
+        latitude: 1,
+        longitude: 1,
+        listId: "not-a-uuid",
+      });
 
     expect(res.status).toBe(400);
   });
@@ -67,7 +92,12 @@ describe("input validation", () => {
     const res = await request(getApp())
       .post("/places")
       .set(authHeader(user.token))
-      .send({ name: "Somewhere nice", latitude: 48.2, longitude: 16.4, listId: list.id });
+      .send({
+        name: "Somewhere nice",
+        latitude: 48.2,
+        longitude: 16.4,
+        listId: list.id,
+      });
 
     expect(res.status).toBe(201);
   });
@@ -138,7 +168,9 @@ describe("input validation", () => {
   });
 
   it("rejects an out-of-range reverse-geocode latitude", async () => {
-    const res = await request(getApp()).get("/geo/reverse").query({ lat: "999", lon: "1" });
+    const res = await request(getApp())
+      .get("/geo/reverse")
+      .query({ lat: "999", lon: "1" });
     expect(res.status).toBe(400);
   });
 });

@@ -19,8 +19,7 @@
 	--success: #93ab86;
 	--danger: #cf6b5f;
 	--font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-	--font-body:
-		-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+	--font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 	font-family: var(--font-body);
 }
 

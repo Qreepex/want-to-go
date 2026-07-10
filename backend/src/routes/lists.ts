@@ -120,7 +120,10 @@ const deleteList: RequestHandler = async (request, response) => {
     return;
   }
 
-  const ownedLists = await db.select({ id: lists.id }).from(lists).where(eq(lists.ownerId, userId));
+  const ownedLists = await db
+    .select({ id: lists.id })
+    .from(lists)
+    .where(eq(lists.ownerId, userId));
 
   if (ownedLists.length <= 1) {
     response.status(400).json({ error: "Cannot delete your only list" });
@@ -188,7 +191,9 @@ const removeListMember: RequestHandler = async (request, response) => {
 
   await db
     .delete(listMembers)
-    .where(and(eq(listMembers.listId, listId), eq(listMembers.userId, targetUserId)));
+    .where(
+      and(eq(listMembers.listId, listId), eq(listMembers.userId, targetUserId)),
+    );
 
   response.status(204).send();
 };
@@ -292,7 +297,11 @@ const joinList: RequestHandler = async (request, response) => {
 
 listsRouter.get("/", listLists);
 listsRouter.post("/", validate({ body: listNameBodySchema }), createList);
-listsRouter.post("/join/:token", validate({ params: shareTokenParamSchema }), joinList);
+listsRouter.post(
+  "/join/:token",
+  validate({ params: shareTokenParamSchema }),
+  joinList,
+);
 listsRouter.patch(
   "/:id",
   validate({ params: uuidParamSchema, body: listNameBodySchema }),
@@ -314,6 +323,10 @@ listsRouter.post(
   validate({ params: uuidParamSchema, body: shareRoleBodySchema }),
   setShareLink,
 );
-listsRouter.delete("/:id/share", validate({ params: uuidParamSchema }), revokeShareLink);
+listsRouter.delete(
+  "/:id/share",
+  validate({ params: uuidParamSchema }),
+  revokeShareLink,
+);
 
 export default listsRouter;

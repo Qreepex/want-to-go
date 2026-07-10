@@ -41,8 +41,7 @@
 	let memberPendingRemoval = $state<ListMember | null>(null);
 
 	const canDelete = $derived(
-		list.role !== 'owner' ||
-			listsStore.items.filter((item) => item.role === 'owner').length > 1
+		list.role !== 'owner' || listsStore.items.filter((item) => item.role === 'owner').length > 1
 	);
 
 	const joinUrl = $derived(
@@ -125,7 +124,10 @@
 				Delete
 			</button>
 		{:else}
-			<button onclick={() => (leaveConfirmOpen = true)} class="text-(--danger) hover:text-(--danger)">
+			<button
+				onclick={() => (leaveConfirmOpen = true)}
+				class="text-(--danger) hover:text-(--danger)"
+			>
 				Leave list
 			</button>
 		{/if}
@@ -156,11 +158,13 @@
 			{:else}
 				<div class="flex items-end gap-2">
 					<div class="flex-1">
-						<Select label="Access level" bind:value={shareRoleSelection} options={shareRoleOptions} />
+						<Select
+							label="Access level"
+							bind:value={shareRoleSelection}
+							options={shareRoleOptions}
+						/>
 					</div>
-					<Button size="sm" onclick={() => shareList(list, shareRoleSelection)}>
-						Create link
-					</Button>
+					<Button size="sm" onclick={() => shareList(list, shareRoleSelection)}>Create link</Button>
 				</div>
 			{/if}
 

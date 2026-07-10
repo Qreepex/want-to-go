@@ -102,7 +102,10 @@ export function extractOwnImageKey(value: string): string | null {
 
     if (bucket && endpoint) {
       const prefix = `/${bucket}/`;
-      if (parsed.host === new URL(endpoint).host && parsed.pathname.startsWith(prefix)) {
+      if (
+        parsed.host === new URL(endpoint).host &&
+        parsed.pathname.startsWith(prefix)
+      ) {
         return decodeURIComponent(parsed.pathname.slice(prefix.length));
       }
     }

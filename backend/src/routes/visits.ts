@@ -45,7 +45,12 @@ const listVisits: RequestHandler = async (request, response) => {
     })
     .from(visits)
     .innerJoin(places, eq(visits.placeId, places.id))
-    .where(and(eq(visits.userId, authRequest.authUser.userId), inArray(places.listId, listIds)))
+    .where(
+      and(
+        eq(visits.userId, authRequest.authUser.userId),
+        inArray(places.listId, listIds),
+      ),
+    )
     .orderBy(desc(visits.visitedAt));
 
   response.json({ visits: rows });
@@ -89,7 +94,9 @@ const createVisit: RequestHandler = async (request, response) => {
 const updateVisit: RequestHandler = async (request, response) => {
   const authRequest = request as AuthenticatedRequest;
   const visitId = request.params.id as string;
-  const { visitedAt, notes } = request.body as z.infer<typeof updateVisitBodySchema>;
+  const { visitedAt, notes } = request.body as z.infer<
+    typeof updateVisitBodySchema
+  >;
 
   const existingVisit = await db.query.visits.findFirst({
     where: eq(visits.id, visitId),
