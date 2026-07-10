@@ -1,8 +1,8 @@
 <script lang="ts">
 	import MultiSelect from '$lib/components/ui/MultiSelect.svelte';
-	import { CONTINENTS, getContinent } from '$lib/dashboard/continents';
-	import { countryCodeToFlagEmoji, filterPlaces, getAllTags } from '$lib/dashboard/helpers';
 	import Panel from '$lib/components/ui/Panel.svelte';
+	import { CONTINENTS, getContinent } from '$lib/dashboard/continents';
+	import { filterPlaces, getAllTags } from '$lib/dashboard/helpers';
 	import { listsStore } from '$lib/state/lists.svelte';
 	import { placeFilters } from '$lib/state/placeFilters.svelte';
 	import { placesStore } from '$lib/state/places.svelte';
@@ -18,17 +18,25 @@
 	);
 
 	const countryOptions = $derived(
-		[...new Set(placesStore.items.map((place) => place.countryCode).filter(Boolean))]
+		[
+			...new Set(
+				placesStore.items
+					.filter((place) => !!place.countryCode && !place.visits.length)
+					.map((place) => place.countryCode)
+			)
+		]
 			.sort()
 			.map((code) => ({
 				value: code as string,
-				label: `${countryCodeToFlagEmoji(code) ?? ''} ${code}`.trim()
+				label: code as string,
+				icon: code as string
 			}))
 	);
 
 	const usedContinentCodes = $derived(
 		new Set(
 			placesStore.items
+				.filter((place) => !!place.countryCode && !place.visits.length)
 				.map((place) => getContinent(place.countryCode))
 				.filter((continent): continent is string => Boolean(continent))
 		)

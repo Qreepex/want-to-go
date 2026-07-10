@@ -1,6 +1,6 @@
 <script lang="ts">
+	import FlagIcon from '$lib/components/ui/FlagIcon.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
-	import { countryCodeToFlagEmoji } from '$lib/dashboard/helpers';
 	import { visitsStore } from '$lib/state/visits.svelte';
 
 	function yearOf(visitedAt: string): string {
@@ -53,9 +53,9 @@
 									/>
 								{/if}
 								<div class="min-w-0">
-									<p class="truncate text-sm font-medium text-(--text)">
-										{countryCodeToFlagEmoji(visit.place.countryCode) ?? ''}
-										{visit.place.name}
+									<p class="flex items-center gap-1.5 truncate text-sm font-medium text-(--text)">
+										<FlagIcon countryCode={visit.place.countryCode} class="h-3.5 w-[1.1rem]" />
+										<span class="truncate">{visit.place.name}</span>
 									</p>
 									<p class="text-xs text-(--muted-dim)">{formatVisitDate(visit.visitedAt)}</p>
 									{#if visit.notes}

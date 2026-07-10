@@ -2,13 +2,12 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
+	import FlagIcon from '$lib/components/ui/FlagIcon.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
 	import TextField from '$lib/components/ui/TextField.svelte';
 	import { closeViewer, editViewedPlace, logVisit, removePlace, removeVisit } from '$lib/dashboard/actions';
-	import { countryCodeToFlagEmoji, getUrlDomain } from '$lib/dashboard/helpers';
+	import { getUrlDomain } from '$lib/dashboard/helpers';
 	import { placeViewer } from '$lib/state/placeViewer.svelte';
-
-	const flag = $derived(countryCodeToFlagEmoji(placeViewer.countryCode));
 
 	let lightboxUrl = $state<string | null>(null);
 	let showDeleteConfirm = $state(false);
@@ -47,9 +46,7 @@
 		<Panel floating>
 			<div class="flex items-start justify-between gap-3">
 				<div class="flex min-w-0 items-center gap-2">
-					{#if flag}
-						<span class="text-xl leading-none">{flag}</span>
-					{/if}
+					<FlagIcon countryCode={placeViewer.countryCode} class="h-4 w-5" />
 					<h2 class="truncate text-lg font-semibold text-(--text)">{place.name}</h2>
 				</div>
 				<div class="flex shrink-0 items-center gap-1">

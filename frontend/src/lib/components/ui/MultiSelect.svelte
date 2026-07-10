@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import FlagIcon from './FlagIcon.svelte';
 
 	let {
 		label,
@@ -10,7 +11,7 @@
 	} = $props<{
 		label?: string;
 		value?: string[];
-		options: { value: string; label: string }[];
+		options: { value: string; label: string; icon?: string }[];
 		placeholder?: string;
 		id?: string;
 	}>();
@@ -94,6 +95,9 @@
 							<span class="text-[10px] leading-none">✓</span>
 						{/if}
 					</span>
+					{#if option.icon}
+						<FlagIcon countryCode={option.icon} class="h-3.5 w-[1.1rem]" />
+					{/if}
 					{option.label}
 				</button>
 			{/each}

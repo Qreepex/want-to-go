@@ -227,15 +227,3 @@ export function getUrlDomain(url: string): string {
 		return url;
 	}
 }
-
-export function countryCodeToFlagEmoji(countryCode: string | null | undefined): string | null {
-	if (!countryCode || countryCode.length !== 2) {
-		return null;
-	}
-
-	const codePoints = [...countryCode.toUpperCase()].map(
-		(char) => 127397 + char.charCodeAt(0)
-	);
-
-	return String.fromCodePoint(...codePoints);
-}
