@@ -39,7 +39,17 @@ export default defineConfig({
 			// an SPA shell for client-rendered routes like /app.
 			adapter: adapter({
 				fallback: '200.html'
-			})
+			}),
+
+			// Emit absolute (root-relative) asset paths instead of the default
+			// relative ones. Relative paths break for deep routes like
+			// /lists/join/[token]: when Cloudflare's SPA fallback serves
+			// index.html/200.html there, `./_app/...` resolves against
+			// `/lists/join/`, 404s, and gets re-served as index.html again -
+			// which the browser rejects as a JS module (wrong MIME type).
+			paths: {
+				relative: false
+			}
 		})
 	]
 });
