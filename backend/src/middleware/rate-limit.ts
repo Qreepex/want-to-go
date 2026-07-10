@@ -79,11 +79,11 @@ export const generalRateLimiter = createRateLimiter({
   name: "general",
   userRules: [
     { windowSeconds: 1, maxRequests: 5, banSeconds: 10 },
-    { windowSeconds: 15, maxRequests: 10, banSeconds: 30 },
+    { windowSeconds: 15, maxRequests: 20, banSeconds: 30 },
   ],
   ipRules: [
     { windowSeconds: 1, maxRequests: 10, banSeconds: 10 },
-    { windowSeconds: 15, maxRequests: 20, banSeconds: 300 },
+    { windowSeconds: 15, maxRequests: 50, banSeconds: 300 },
   ],
 });
 
