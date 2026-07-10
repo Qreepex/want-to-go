@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Seo from '$lib/components/Seo.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
+	import { siteName } from '$lib/config/site';
 </script>
 
-<Seo title="Legal Notice" description="Legal notice / Impressum for Want To Go." />
+<Seo title="Legal Notice" description="Legal notice / Impressum for {siteName}." />
 
 <main class="flex h-screen justify-center overflow-y-auto px-6 py-10">
 	<div class="w-full max-w-3xl">
 		<nav class="mb-6 flex items-center gap-4 text-sm text-(--muted)">
-			<a href="/" class="hover:text-(--text)">&larr; Back to Want To Go</a>
+			<a href="/" class="hover:text-(--text)">&larr; Back to {siteName}</a>
 			<a href="/privacy" class="hover:text-(--text)">Privacy Policy</a>
 		</nav>
 

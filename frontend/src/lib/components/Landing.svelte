@@ -3,7 +3,9 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import FlagIcon from '$lib/components/ui/FlagIcon.svelte';
+	import Logo from '$lib/components/ui/Logo.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
+	import { siteName, tagline } from '$lib/config/site';
 	import { beginLogin } from '$lib/dashboard/actions';
 	import { pickRandomDemoPlaces } from '$lib/dashboard/demoPlaces';
 	import type { PlaceRecord } from '$lib/types';
@@ -51,20 +53,17 @@
 <main class="h-screen overflow-y-auto px-6 py-10">
 	<div class="mx-auto flex max-w-5xl flex-col gap-16">
 		<nav class="flex items-center justify-between">
-			<div class="inline-flex items-center gap-2 text-sm font-semibold text-(--text)">
-				<span class="h-1.5 w-1.5 rounded-full bg-(--accent)"></span>
-				Want To Go
-			</div>
+			<Logo />
 			<Button variant="ghost" size="sm" onclick={beginLogin}>Sign in</Button>
 		</nav>
 
 		<section class="max-w-2xl">
 			<h1 class="mt-6 text-4xl font-semibold tracking-tight text-(--text) md:text-6xl">
-				Save your next trip on a map, not in a notes app.
+				{tagline}
 			</h1>
 			<p class="mt-4 max-w-xl text-base text-(--muted) md:text-lg">
-				Want To Go is where you collect the places you want to visit - search for them, drop a pin,
-				and keep notes, photos, and links right where you’ll actually see them again.
+				{siteName} is where you collect the places worth chasing - search for them, drop a pin, and
+				keep notes, photos, and links right where you’ll actually see them again.
 			</p>
 			<div class="mt-8 flex flex-wrap gap-3">
 				<Button onclick={beginLogin}>Get started - it’s free</Button>
@@ -146,7 +145,7 @@
 		<footer
 			class="flex flex-wrap items-center justify-between gap-4 border-t border-(--border) pt-6 text-sm text-(--muted-dim)"
 		>
-			<span>&copy; {new Date().getFullYear()} Want To Go</span>
+			<span>&copy; {new Date().getFullYear()} {siteName}</span>
 			<div class="flex gap-4">
 				<a href="/privacy" class="hover:text-(--text)">Privacy Policy</a>
 				<a href="/legal-notice" class="hover:text-(--text)">Legal Notice</a>

@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Seo from '$lib/components/Seo.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
+	import { siteName } from '$lib/config/site';
 </script>
 
-<Seo title="Privacy Policy" description="How Want To Go handles your data." />
+<Seo title="Privacy Policy" description="How {siteName} handles your data." />
 
 <main class="flex h-screen justify-center overflow-y-auto px-6 py-10">
 	<div class="w-full max-w-3xl">
 		<nav class="mb-6 flex items-center gap-4 text-sm text-(--muted)">
-			<a href="/" class="hover:text-(--text)">&larr; Back to Want To Go</a>
+			<a href="/" class="hover:text-(--text)">&larr; Back to {siteName}</a>
 			<a href="/legal-notice" class="hover:text-(--text)">Legal Notice</a>
 		</nav>
 
@@ -23,7 +24,7 @@
 			<section class="space-y-2">
 				<h2 class="text-lg font-semibold text-(--text)">1. Who we are</h2>
 				<p class="text-sm text-(--muted) md:text-base">
-					Want To Go is operated by Ben Schiemann. If you have questions about this policy or your
+					{siteName} is operated by Ben Schiemann. If you have questions about this policy or your
 					data, contact <a href="mailto:ai@qreepex.xyz" class="text-(--accent-strong) underline"
 						>ai@qreepex.xyz</a
 					>. Full operator details are on the
@@ -34,7 +35,7 @@
 			<section class="space-y-2">
 				<h2 class="text-lg font-semibold text-(--text)">2. Account &amp; sign-in</h2>
 				<p class="text-sm text-(--muted) md:text-base">
-					Want To Go uses OAuth-based sign-in. We only store an account ID and username &mdash; we
+					{siteName} uses OAuth-based sign-in. We only store an account ID and username &mdash; we
 					never collect or store your email address or a password. Your session is authenticated
 					with a token stored in your browser's local storage.
 				</p>

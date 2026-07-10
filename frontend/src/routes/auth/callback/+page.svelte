@@ -3,6 +3,7 @@
 	import { getBackendUrl } from '$lib/api/client';
 	import { setStoredToken } from '$lib/api/token';
 	import Seo from '$lib/components/Seo.svelte';
+	import { siteName } from '$lib/config/site';
 	import { onMount } from 'svelte';
 
 	let status = $state('Completing sign-in...');
@@ -38,7 +39,7 @@
 	<div
 		class="max-w-md rounded-3xl border border-(--border) bg-(--surface) p-8 shadow-2xl shadow-black/40"
 	>
-		<p class="text-xs text-(--accent-strong)">Want To Go</p>
+		<p class="text-xs text-(--accent-strong)">{siteName}</p>
 		<h1 class="mt-4 text-3xl font-semibold text-(--text)">{status}</h1>
 		<p class="mt-3 text-sm text-(--muted)">
 			If redirecting takes too long, return to the home page and try again.
