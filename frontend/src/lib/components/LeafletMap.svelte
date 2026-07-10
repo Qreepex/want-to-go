@@ -57,7 +57,7 @@
 				.setView([20, 0], 2);
 			leafletModule
 				.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-					attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+					attribution: `&copy; OpenStreetMap contributors &copy; CARTO | Geocoding: <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">Nominatim</a>, <a href="https://photon.komoot.io" target="_blank" rel="noopener noreferrer">Photon</a>, <a href="https://www.geoapify.com" target="_blank" rel="noopener noreferrer">Geoapify</a> | <a href="https://github.com/qreepex/want-to-go/commit/${__COMMIT_HASH__}" target="_blank" rel="noopener noreferrer">${__COMMIT_HASH__}</a>`,
 					subdomains: 'abcd',
 					maxZoom: 20
 				})

@@ -8,6 +8,9 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	// Injected at build time by vite.config.ts from the current git commit.
+	const __COMMIT_HASH__: string;
 }
 
 export {};
