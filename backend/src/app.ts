@@ -8,6 +8,7 @@ import listsRouter from "./routes/lists.js";
 import placesRouter from "./routes/places.js";
 import statsRouter from "./routes/stats.js";
 import uploadsRouter from "./routes/uploads.js";
+import visitsRouter from "./routes/visits.js";
 
 export function createApp() {
   const app = express();
@@ -33,6 +34,7 @@ export function createApp() {
   app.use("/places", placesRouter);
   app.use("/stats", statsRouter);
   app.use("/uploads", uploadsRouter);
+  app.use("/visits", visitsRouter);
 
   return app;
 }

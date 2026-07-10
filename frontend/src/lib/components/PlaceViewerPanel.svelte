@@ -1,8 +1,10 @@
 <script lang="ts">
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
-	import { closeViewer, editViewedPlace, removePlace } from '$lib/dashboard/actions';
+	import TextField from '$lib/components/ui/TextField.svelte';
+	import { closeViewer, editViewedPlace, logVisit, removePlace, removeVisit } from '$lib/dashboard/actions';
 	import { countryCodeToFlagEmoji, getUrlDomain } from '$lib/dashboard/helpers';
 	import { placeViewer } from '$lib/state/placeViewer.svelte';
 
@@ -10,6 +12,31 @@
 
 	let lightboxUrl = $state<string | null>(null);
 	let showDeleteConfirm = $state(false);
+	let showLogVisit = $state(false);
+	let newVisitDate = $state(new Date().toISOString().slice(0, 10));
+	let newVisitNotes = $state('');
+	let isLoggingVisit = $state(false);
+
+	async function submitVisit(placeId: string): Promise<void> {
+		isLoggingVisit = true;
+
+		try {
+			await logVisit(placeId, newVisitDate, newVisitNotes);
+			newVisitNotes = '';
+			showLogVisit = false;
+		} finally {
+			isLoggingVisit = false;
+		}
+	}
+
+	function formatVisitDate(visitedAt: string): string {
+		const [year, month, day] = visitedAt.split('-').map(Number);
+		return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric'
+		});
+	}
 </script>
 
 {#if placeViewer.place}
@@ -110,6 +137,54 @@
 					{/each}
 				</div>
 			{/if}
+
+			<div class="mt-4 border-t border-(--border) pt-3">
+				<div class="flex items-center justify-between">
+					<span class="text-xs tracking-wide text-(--muted)">Visits</span>
+					<button
+						type="button"
+						onclick={() => (showLogVisit = !showLogVisit)}
+						class="text-xs text-(--accent-strong) transition hover:text-(--accent-strong-hover)"
+					>
+						{showLogVisit ? 'Cancel' : '+ Log a visit'}
+					</button>
+				</div>
+
+				{#if place.visits.length}
+					<ul class="mt-2 grid gap-1.5">
+						{#each place.visits as visit (visit.id)}
+							<li class="flex items-start justify-between gap-2 rounded-lg border border-(--border) px-2.5 py-1.5">
+								<div class="min-w-0">
+									<p class="text-sm text-(--text)">{formatVisitDate(visit.visitedAt)}</p>
+									{#if visit.notes}
+										<p class="mt-0.5 text-xs text-(--muted)">{visit.notes}</p>
+									{/if}
+								</div>
+								<button
+									type="button"
+									onclick={() => removeVisit(visit.id)}
+									aria-label="Remove visit"
+									class="shrink-0 text-(--muted) transition hover:text-(--text)"
+								>
+									×
+								</button>
+							</li>
+						{/each}
+					</ul>
+				{:else}
+					<p class="mt-2 text-sm text-(--muted-dim)">Not visited yet.</p>
+				{/if}
+
+				{#if showLogVisit}
+					<div class="mt-3 grid gap-2">
+						<TextField label="Visited on" type="date" bind:value={newVisitDate} />
+						<TextField label="Notes (optional)" bind:value={newVisitNotes} placeholder="How was it?" />
+						<Button onclick={() => submitVisit(place.id)} disabled={isLoggingVisit} size="sm">
+							{isLoggingVisit ? 'Saving…' : 'Save visit'}
+						</Button>
+					</div>
+				{/if}
+			</div>
 
 			{#if place.imageUrls?.length}
 				<div class="mt-4 grid grid-cols-3 gap-2">

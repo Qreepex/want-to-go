@@ -1,10 +1,28 @@
 <script lang="ts">
 	import { viewPlace } from '$lib/dashboard/actions';
-	import type { PlaceRecord } from '$lib/types';
+	import type { PlaceRecord, VisitRecord } from '$lib/types';
 
 	let { place } = $props<{ place: PlaceRecord }>();
 
 	const thumbnailUrl = $derived(place.imageUrls?.[0] ?? null);
+
+	const lastVisitedAt = $derived(
+		place.visits.length
+			? place.visits.reduce(
+					(latest: string, visit: VisitRecord) =>
+						visit.visitedAt > latest ? visit.visitedAt : latest,
+					place.visits[0].visitedAt
+				)
+			: null
+	);
+
+	function formatShortDate(visitedAt: string): string {
+		const [year, month, day] = visitedAt.split('-').map(Number);
+		return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+			year: 'numeric',
+			month: 'short'
+		});
+	}
 </script>
 
 <article
@@ -31,5 +49,12 @@
 				<span>{place.socialUrls.length} links</span>
 			{/if}
 		</div>
+		{#if lastVisitedAt}
+			<span class="rounded-full border border-(--border) bg-(--accent-soft) px-2 py-0.5 text-xs text-(--accent-strong)">
+				{place.visits.length > 1
+					? `Visited ${place.visits.length}× · last ${formatShortDate(lastVisitedAt)}`
+					: `Visited ${formatShortDate(lastVisitedAt)}`}
+			</span>
+		{/if}
 	</div>
 </article>

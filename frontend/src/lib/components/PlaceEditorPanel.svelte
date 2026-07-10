@@ -263,6 +263,24 @@
 					bind:value={placeEditor.draft.tags}
 					suggestions={getAllTags(placesStore.items)}
 				/>
+				{#if placeEditor.mode === 'create'}
+					<label class="flex items-center gap-2 text-sm text-(--text)">
+						<input type="checkbox" bind:checked={placeEditor.draft.alreadyVisited} />
+						I've already been here
+					</label>
+					{#if placeEditor.draft.alreadyVisited}
+						<TextField
+							label="Visited on"
+							type="date"
+							bind:value={placeEditor.draft.visitedAt}
+						/>
+						<TextArea
+							label="Visit notes"
+							bind:value={placeEditor.draft.visitNotes}
+							placeholder="Anything worth remembering about this visit?"
+						/>
+					{/if}
+				{/if}
 				{#if isUploadingImage}
 					<p class="text-xs text-(--muted-dim)">Uploading image…</p>
 				{/if}

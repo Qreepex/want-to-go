@@ -14,13 +14,15 @@
 		selection = null,
 		focusPlace = null,
 		onPick = () => {},
-		onSelectPlace = () => {}
+		onSelectPlace = () => {},
+		highlightCountryCodes = []
 	} = $props<{
 		places?: PlaceRecord[];
 		selection?: MapSelection;
 		focusPlace?: PlaceRecord | null;
 		onPick?: (selection: { latitude: number; longitude: number }) => void;
 		onSelectPlace?: (place: PlaceRecord) => void;
+		highlightCountryCodes?: string[];
 	}>();
 
 	const FOCUS_ZOOM = 11;
@@ -28,8 +30,10 @@
 	let container: HTMLDivElement | null = null;
 	let map: import('leaflet').Map | null = null;
 	let markerLayer: import('leaflet').LayerGroup | null = null;
+	let countryLayer: import('leaflet').GeoJSON | null = null;
 	let leafletModule: typeof import('leaflet') | null = null;
 	let lastFocusedPlace: PlaceRecord | null = null;
+	let countriesGeoJson: object | null = null;
 
 	onMount(() => {
 		let active = true;
@@ -65,6 +69,7 @@
 			});
 
 			renderLayers();
+			void renderCountryHighlights();
 		};
 
 		void initializeMap();
@@ -74,6 +79,7 @@
 			map?.remove();
 			map = null;
 			markerLayer = null;
+			countryLayer = null;
 		};
 	});
 
@@ -133,6 +139,55 @@
 		}
 	}
 
+	async function renderCountryHighlights() {
+		if (!map || !leafletModule) {
+			return;
+		}
+
+		if (!highlightCountryCodes.length) {
+			countryLayer?.remove();
+			countryLayer = null;
+			return;
+		}
+
+		if (!countriesGeoJson) {
+			try {
+				const response = await fetch('/world-countries.geojson');
+				countriesGeoJson = await response.json();
+			} catch {
+				return;
+			}
+		}
+
+		if (!map || !leafletModule || !countriesGeoJson) {
+			return;
+		}
+
+		countryLayer?.remove();
+
+		const highlighted = new Set(highlightCountryCodes);
+		const rootStyle = getComputedStyle(document.documentElement);
+		const accentColor = rootStyle.getPropertyValue('--accent').trim() || '#38bdf8';
+		const accentStrongColor = rootStyle.getPropertyValue('--accent-strong').trim() || accentColor;
+
+		countryLayer = leafletModule
+			.geoJSON(countriesGeoJson as never, {
+				style: (feature) => {
+					const isoA2 = feature?.properties?.iso_a2;
+					const isHighlighted = typeof isoA2 === 'string' && highlighted.has(isoA2);
+					return {
+						color: isHighlighted ? accentStrongColor : 'transparent',
+						weight: 1,
+						fillColor: isHighlighted ? accentColor : 'transparent',
+						fillOpacity: isHighlighted ? 0.25 : 0,
+						interactive: false
+					};
+				}
+			})
+			.addTo(map);
+		countryLayer.bringToBack();
+	}
+
 	function escapeHtml(value: string): string {
 		return value
 			.replaceAll('&', '&amp;')
@@ -151,6 +206,16 @@
 		}
 
 		renderLayers();
+	});
+
+	$effect(() => {
+		highlightCountryCodes;
+
+		if (!leafletModule) {
+			return;
+		}
+
+		void renderCountryHighlights();
 	});
 
 	$effect(() => {

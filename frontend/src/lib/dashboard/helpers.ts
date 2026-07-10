@@ -16,7 +16,14 @@ export type PlaceDraft = {
 	socialUrls: string;
 	listId: string;
 	tags: string[];
+	alreadyVisited: boolean;
+	visitedAt: string;
+	visitNotes: string;
 };
+
+function today(): string {
+	return new Date().toISOString().slice(0, 10);
+}
 
 export function getUserInitial(username: string | null | undefined): string {
 	return (username?.charAt(0) ?? '?').toUpperCase();
@@ -33,7 +40,10 @@ export function createEmptyPlaceDraft(listId = ''): PlaceDraft {
 		imageUrls: '',
 		socialUrls: '',
 		listId,
-		tags: []
+		tags: [],
+		alreadyVisited: false,
+		visitedAt: today(),
+		visitNotes: ''
 	};
 }
 
@@ -49,7 +59,10 @@ export function createPlaceDraft(
 		imageUrls: 'imageUrls' in place && place.imageUrls ? place.imageUrls.join('\n') : '',
 		socialUrls: 'socialUrls' in place && place.socialUrls ? place.socialUrls.join('\n') : '',
 		listId,
-		tags: 'tags' in place && place.tags ? [...place.tags] : []
+		tags: 'tags' in place && place.tags ? [...place.tags] : [],
+		alreadyVisited: false,
+		visitedAt: today(),
+		visitNotes: ''
 	};
 }
 
@@ -102,9 +115,18 @@ export function filterPlaces(
 		countryCodes: string[];
 		continents: string[];
 		tags: string[];
+		visited: 'want-to-go' | 'been';
 	}
 ): PlaceRecord[] {
 	return items.filter((place) => {
+		if (filters.visited === 'want-to-go' && place.visits.length > 0) {
+			return false;
+		}
+
+		if (filters.visited === 'been' && place.visits.length === 0) {
+			return false;
+		}
+
 		if (filters.listIds.length && !filters.listIds.includes(place.listId)) {
 			return false;
 		}

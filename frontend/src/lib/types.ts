@@ -16,7 +16,26 @@ export interface PlaceRecord {
 	imageUrls: string[] | null;
 	socialUrls: string[] | null;
 	tags: string[];
+	visits: VisitRecord[];
 	createdAt: string;
+}
+
+export interface VisitRecord {
+	id: string;
+	placeId: string;
+	visitedAt: string;
+	notes: string | null;
+	createdAt: string;
+}
+
+export interface VisitWithPlace extends VisitRecord {
+	place: Pick<PlaceRecord, 'id' | 'name' | 'countryCode' | 'latitude' | 'longitude' | 'imageUrls'>;
+}
+
+export interface VisitPayload {
+	placeId: string;
+	visitedAt: string;
+	notes?: string | null;
 }
 
 export interface PlaceSearchResult {

@@ -15,12 +15,13 @@ class PlacesStore {
 		}
 	}
 
-	async create(token: string, payload: PlacePayload): Promise<void> {
+	async create(token: string, payload: PlacePayload): Promise<PlaceRecord> {
 		this.isLoading = true;
 
 		try {
-			await createPlace(token, payload);
+			const created = await createPlace(token, payload);
 			await this.load(token);
+			return created;
 		} finally {
 			this.isLoading = false;
 		}

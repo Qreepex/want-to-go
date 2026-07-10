@@ -33,7 +33,7 @@
 	});
 </script>
 
-<div class="pointer-events-auto fixed right-4 top-4 z-1000 sm:right-6 sm:top-6">
+<div class="relative">
 	<button
 		bind:this={button}
 		onclick={() => (open = !open)}

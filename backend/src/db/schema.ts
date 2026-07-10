@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+  date,
   doublePrecision,
   pgEnum,
   pgTable,
@@ -84,6 +85,21 @@ export const placeTags = pgTable(
   (table) => [primaryKey({ columns: [table.placeId, table.tag] })],
 );
 
+export const visits = pgTable("visits", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  placeId: uuid("place_id")
+    .notNull()
+    .references(() => places.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  visitedAt: date("visited_at").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const images = pgTable("images", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: text("user_id")
@@ -100,6 +116,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   images: many(images),
   lists: many(lists),
   listMemberships: many(listMembers),
+  visits: many(visits),
 }));
 
 export const listsRelations = relations(lists, ({ one, many }) => ({
@@ -132,6 +149,18 @@ export const placesRelations = relations(places, ({ one, many }) => ({
     references: [lists.id],
   }),
   tags: many(placeTags),
+  visits: many(visits),
+}));
+
+export const visitsRelations = relations(visits, ({ one }) => ({
+  place: one(places, {
+    fields: [visits.placeId],
+    references: [places.id],
+  }),
+  user: one(users, {
+    fields: [visits.userId],
+    references: [users.id],
+  }),
 }));
 
 export const placeTagsRelations = relations(placeTags, ({ one }) => ({
@@ -151,3 +180,4 @@ export const imagesRelations = relations(images, ({ one }) => ({
 export type Place = typeof places.$inferSelect;
 export type List = typeof lists.$inferSelect;
 export type ListMember = typeof listMembers.$inferSelect;
+export type Visit = typeof visits.$inferSelect;

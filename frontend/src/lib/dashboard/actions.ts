@@ -18,6 +18,7 @@ import { placesStore } from '$lib/state/places.svelte';
 import { placeViewer } from '$lib/state/placeViewer.svelte';
 import { session } from '$lib/state/session.svelte';
 import { statusStore } from '$lib/state/status.svelte';
+import { visitsStore } from '$lib/state/visits.svelte';
 import type { ListMember, ListRecord, PlaceRecord, PlaceSearchResult, ShareRole } from '$lib/types';
 
 export async function initDashboard(): Promise<void> {
@@ -45,7 +46,11 @@ export async function initDashboard(): Promise<void> {
 		}
 	}
 
-	await Promise.all([placesStore.load(session.token), listsStore.load(session.token)]);
+	await Promise.all([
+		placesStore.load(session.token),
+		listsStore.load(session.token),
+		visitsStore.load(session.token)
+	]);
 }
 
 export function beginLogin(): void {
@@ -56,6 +61,7 @@ export function signOut(): void {
 	session.clear();
 	placesStore.clear();
 	listsStore.clear();
+	visitsStore.clear();
 	placeEditor.close();
 	locationSearch.reset();
 	placeFilters.reset();
@@ -142,7 +148,16 @@ export async function savePlace(): Promise<void> {
 		if (placeEditor.mode === 'edit' && placeEditor.editingPlace) {
 			await placesStore.update(session.token, placeEditor.editingPlace.id, payload);
 		} else {
-			await placesStore.create(session.token, payload);
+			const createdPlace = await placesStore.create(session.token, payload);
+
+			if (placeEditor.draft.alreadyVisited) {
+				await visitsStore.create(session.token, {
+					placeId: createdPlace.id,
+					visitedAt: placeEditor.draft.visitedAt,
+					notes: placeEditor.draft.visitNotes.trim() ? placeEditor.draft.visitNotes.trim() : null
+				});
+				await placesStore.load(session.token);
+			}
 		}
 
 		placeEditor.close();
@@ -151,6 +166,60 @@ export async function savePlace(): Promise<void> {
 		statusStore.show(error instanceof Error ? error.message : 'Unable to save place');
 	} finally {
 		placeEditor.isSaving = false;
+	}
+}
+
+function resyncViewedPlace(): void {
+	if (!placeViewer.place) {
+		return;
+	}
+
+	const refreshed = placesStore.items.find((place) => place.id === placeViewer.place?.id);
+
+	if (refreshed) {
+		placeViewer.place = refreshed;
+	}
+}
+
+export async function logVisit(
+	placeId: string,
+	visitedAt: string,
+	notes: string
+): Promise<void> {
+	if (!session.token) {
+		return;
+	}
+
+	statusStore.clear();
+
+	try {
+		await visitsStore.create(session.token, {
+			placeId,
+			visitedAt,
+			notes: notes.trim() ? notes.trim() : null
+		});
+		await placesStore.load(session.token);
+		resyncViewedPlace();
+		statusStore.show('Visit logged.');
+	} catch (error) {
+		statusStore.show(error instanceof Error ? error.message : 'Unable to log visit');
+	}
+}
+
+export async function removeVisit(visitId: string): Promise<void> {
+	if (!session.token) {
+		return;
+	}
+
+	statusStore.clear();
+
+	try {
+		await visitsStore.remove(session.token, visitId);
+		await placesStore.load(session.token);
+		resyncViewedPlace();
+		statusStore.show('Visit removed.');
+	} catch (error) {
+		statusStore.show(error instanceof Error ? error.message : 'Unable to remove visit');
 	}
 }
 

@@ -13,6 +13,8 @@ import type { AuthenticatedRequest } from "../lib/request.js";
 import { requireAuth } from "../middleware/require-auth.js";
 import { extractOwnImageKey, resolveImageDisplayUrl } from "../lib/s3.js";
 import { getPlaceTags, getTagsForPlaces, normalizeTags, setPlaceTags } from "../lib/tags.js";
+import { getPlaceVisits, getVisitsForPlaces } from "../lib/visits.js";
+import type { Visit } from "../db/schema.js";
 
 const placesRouter = Router();
 
@@ -90,8 +92,12 @@ async function resolvePlaceImages(place: Place): Promise<Place> {
   return { ...place, imageUrls: resolvedImageUrls };
 }
 
-function withTags(place: Place, tags: string[]): Place & { tags: string[] } {
-  return { ...place, tags };
+function withDetails(
+  place: Place,
+  tags: string[],
+  visits: Visit[],
+): Place & { tags: string[]; visits: Visit[] } {
+  return { ...place, tags, visits };
 }
 
 const listPlaces: RequestHandler = async (request, response) => {
@@ -109,11 +115,17 @@ const listPlaces: RequestHandler = async (request, response) => {
     .where(inArray(places.listId, listIds))
     .orderBy(desc(places.createdAt));
 
-  const tagsByPlace = await getTagsForPlaces(savedPlaces.map((place) => place.id));
+  const placeIds = savedPlaces.map((place) => place.id);
+  const tagsByPlace = await getTagsForPlaces(placeIds);
+  const visitsByPlace = await getVisitsForPlaces(placeIds, authRequest.authUser.userId);
 
   const resolvedPlaces = await Promise.all(
     savedPlaces.map(async (place) =>
-      withTags(await resolvePlaceImages(place), tagsByPlace.get(place.id) ?? []),
+      withDetails(
+        await resolvePlaceImages(place),
+        tagsByPlace.get(place.id) ?? [],
+        visitsByPlace.get(place.id) ?? [],
+      ),
     ),
   );
 
@@ -140,7 +152,8 @@ const getPlaceById: RequestHandler = async (request, response) => {
   }
 
   const tags = await getPlaceTags(place.id);
-  response.json({ place: withTags(await resolvePlaceImages(place), tags) });
+  const visits = await getPlaceVisits(place.id, authRequest.authUser.userId);
+  response.json({ place: withDetails(await resolvePlaceImages(place), tags, visits) });
 };
 
 function normalizeCountryCode(value: unknown): string | null {
@@ -230,7 +243,7 @@ const createPlace: RequestHandler = async (request, response) => {
 
   response
     .status(201)
-    .json({ place: withTags(await resolvePlaceImages(createdPlace), normalizedTags) });
+    .json({ place: withDetails(await resolvePlaceImages(createdPlace), normalizedTags, []) });
 };
 
 const updatePlace: RequestHandler = async (request, response) => {
@@ -344,7 +357,8 @@ const updatePlace: RequestHandler = async (request, response) => {
   );
   await cleanUpOrphanedImages(existingPlace.userId, removedImageKeys);
 
-  response.json({ place: withTags(await resolvePlaceImages(updatedPlace), nextTags) });
+  const visits = await getPlaceVisits(existingPlace.id, authRequest.authUser.userId);
+  response.json({ place: withDetails(await resolvePlaceImages(updatedPlace), nextTags, visits) });
 };
 
 const deletePlace: RequestHandler = async (request, response) => {

@@ -3,6 +3,7 @@ class PlaceFiltersStore {
 	countryCodes = $state<string[]>([]);
 	continents = $state<string[]>([]);
 	tags = $state<string[]>([]);
+	visited = $state<'want-to-go' | 'been'>('want-to-go');
 
 	toggleTag(tag: string): void {
 		this.tags = this.tags.includes(tag)
@@ -19,6 +20,7 @@ class PlaceFiltersStore {
 		this.countryCodes = [];
 		this.continents = [];
 		this.tags = [];
+		this.visited = 'want-to-go';
 	}
 }
 
