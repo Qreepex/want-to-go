@@ -20,9 +20,20 @@
 
 	let canvas = $state<HTMLCanvasElement | null>(null);
 	let chart: ChartType | null = null;
+	// Bumped on every render() call so a stale, slower-resolving call (the
+	// chart.js import is async) can detect it's been superseded and bail
+	// instead of racing a newer call to create a second Chart on the same
+	// canvas.
+	let renderToken = 0;
 
 	async function render(): Promise<void> {
-		if (!canvas) {
+		const token = ++renderToken;
+
+		if (!canvas || bars.length === 0) {
+			// Nothing to draw (or nowhere to draw it) — drop any existing chart
+			// rather than leaving a stale instance behind.
+			chart?.destroy();
+			chart = null;
 			return;
 		}
 
@@ -30,6 +41,14 @@
 			'chart.js'
 		);
 		Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
+
+		// A newer render() call may have started (and possibly already
+		// destroyed/replaced things) while the import above was in flight, or
+		// the canvas may have been unmounted entirely — bail rather than hand
+		// Chart.js a stale or detached element.
+		if (token !== renderToken || !canvas || !canvas.isConnected) {
+			return;
+		}
 
 		const config: ChartConfiguration<'bar'> = {
 			type: 'bar',
@@ -81,14 +100,21 @@
 			}
 		};
 
-		// Destroying and recreating (rather than mutating chart.data in place)
-		// avoids Chart.js staleness when the number of bars changes between
-		// filter selections.
-		chart?.destroy();
+		// Prefer updating the existing instance in place (Chart.js's documented
+		// approach for changing datasets, including a different number of
+		// bars) over destroying and recreating, which avoids any risk of a
+		// stray animation frame from an old instance painting over the new one.
+		if (chart) {
+			chart.data = config.data;
+			chart.update();
+			return;
+		}
+
 		chart = new Chart(canvas, config);
 	}
 
 	onDestroy(() => {
+		renderToken++;
 		chart?.destroy();
 	});
 
@@ -102,11 +128,12 @@
 
 <Panel floating class="transition duration-300 hover:-translate-y-0.5 hover:shadow-2xl">
 	<h3 class="mb-3 text-sm font-semibold tracking-wide text-(--text)">{title}</h3>
-	{#if bars.length === 0}
-		<p class="text-sm text-(--muted-dim)">No data for this selection.</p>
-	{:else}
-		<div style="height: {Math.max(bars.length, 1) * 34 + 16}px">
-			<canvas bind:this={canvas}></canvas>
-		</div>
-	{/if}
+	<div class="relative" style="height: {Math.max(bars.length, 1) * 34 + 16}px">
+		<canvas bind:this={canvas} class:invisible={bars.length === 0}></canvas>
+		{#if bars.length === 0}
+			<p class="absolute inset-0 flex items-center text-sm text-(--muted-dim)">
+				No data for this selection.
+			</p>
+		{/if}
+	</div>
 </Panel>

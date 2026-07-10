@@ -159,12 +159,16 @@ export function computeWrapped(places: PlaceRecord[], filters: WrappedFiltersInp
 	};
 }
 
-export function computeProgress(places: PlaceRecord[]): {
+export function computeProgress(
+	places: PlaceRecord[],
+	visitedCountOverride?: number
+): {
 	visitedCount: number;
 	wantToGoCount: number;
 	totalCount: number;
 } {
-	const visitedCount = places.filter((place) => place.visits.length > 0).length;
+	const visitedCount =
+		visitedCountOverride ?? places.filter((place) => place.visits.length > 0).length;
 
 	return {
 		visitedCount,

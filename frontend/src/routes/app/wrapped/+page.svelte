@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Login from '$lib/components/Login.svelte';
 	import PageShell from '$lib/components/layout/PageShell.svelte';
+	import Login from '$lib/components/Login.svelte';
 	import Seo from '$lib/components/Seo.svelte';
 	import StatCard from '$lib/components/wrapped/StatCard.svelte';
 	import WrappedBarChart from '$lib/components/wrapped/WrappedBarChart.svelte';
@@ -10,6 +10,7 @@
 	import WrappedMap from '$lib/components/wrapped/WrappedMap.svelte';
 	import WrappedProgress from '$lib/components/wrapped/WrappedProgress.svelte';
 	import WrappedShareCard from '$lib/components/wrapped/WrappedShareCard.svelte';
+	import { countryName } from '$lib/countries';
 	import { initDashboard } from '$lib/dashboard/actions';
 	import { CATEGORICAL, CHART_ACCENTS, getContinentColor } from '$lib/dashboard/chartColors';
 	import {
@@ -37,10 +38,22 @@
 		}
 	});
 
+	// `.wrapped-enter` uses a CSS `animation` for the entrance effect, but any
+	// element with a declared animation-name creates its own stacking context —
+	// which traps things like the filters' dropdown behind later sections
+	// regardless of z-index. Drop the class once the animation finishes so the
+	// element returns to normal (non-isolated) stacking.
+	function clearEnterAnimation(event: AnimationEvent): void {
+		(event.currentTarget as HTMLElement).classList.remove('wrapped-enter');
+	}
+
 	const availableYears = $derived(getAvailableYears(placesStore.items));
 	const stats = $derived(computeWrapped(placesStore.items, wrappedFilters));
-	const progress = $derived(computeProgress(placesStore.items));
-	const coverage = $derived(computeContinentCoverage(placesStore.items));
+	// Scoped to the current year/filter selection (via stats.visitedPlaces) so
+	// "Your progress" moves in step with the rest of the page instead of
+	// always showing all-time totals.
+	const progress = $derived(computeProgress(placesStore.items, stats.totalPlacesVisited));
+	const coverage = $derived(computeContinentCoverage(stats.visitedPlaces));
 	const hasAnyVisits = $derived(availableYears.length > 0);
 </script>
 
@@ -70,7 +83,11 @@
 						</p>
 					</div>
 				{:else}
-					<div class="wrapped-enter" style="animation-delay: 0ms">
+					<div
+						class="wrapped-enter"
+						style="animation-delay: 0ms"
+						onanimationend={clearEnterAnimation}
+					>
 						<div
 							class="relative overflow-hidden rounded-3xl border border-(--border) p-6 shadow-xl shadow-black/40 transition duration-300 hover:shadow-2xl sm:p-8"
 							style="background: radial-gradient(120% 140% at 0% 0%, {CATEGORICAL[0]}33 0%, transparent 55%),
@@ -85,13 +102,18 @@
 						</div>
 					</div>
 
-					<div class="wrapped-enter" style="animation-delay: 60ms">
+					<div
+						class="wrapped-enter relative z-20"
+						style="animation-delay: 60ms"
+						onanimationend={clearEnterAnimation}
+					>
 						<WrappedFilters places={placesStore.items} />
 					</div>
 
 					<div
 						class="wrapped-enter rounded-2xl border border-(--border) bg-(--surface-floating) p-4 shadow-xl shadow-black/40 backdrop-blur-md transition duration-300 hover:shadow-2xl sm:p-6"
 						style="animation-delay: 100ms"
+						onanimationend={clearEnterAnimation}
 					>
 						<h3 class="mb-4 text-sm font-semibold tracking-wide text-(--text)">Your progress</h3>
 						<div class="flex flex-wrap items-center justify-center gap-6 sm:justify-start">
@@ -117,6 +139,7 @@
 					<div
 						class="wrapped-enter grid grid-cols-2 gap-3 sm:grid-cols-4"
 						style="animation-delay: 140ms"
+						onanimationend={clearEnterAnimation}
 					>
 						<StatCard
 							value={stats.totalPlacesVisited}
@@ -139,7 +162,7 @@
 							color={CATEGORICAL[3]}
 						/>
 						<StatCard
-							value={stats.mostVisitedCountry?.code ?? '—'}
+							value={countryName(stats.mostVisitedCountry?.code ?? '—')}
 							label="Most visited country"
 							sublabel={stats.mostVisitedCountry
 								? `${stats.mostVisitedCountry.count} places`
@@ -170,7 +193,11 @@
 						/>
 					</div>
 
-					<div class="wrapped-enter grid gap-4 sm:grid-cols-2" style="animation-delay: 180ms">
+					<div
+						class="wrapped-enter grid gap-4 sm:grid-cols-2"
+						style="animation-delay: 180ms"
+						onanimationend={clearEnterAnimation}
+					>
 						<WrappedBarChart
 							title="Top countries"
 							color={CHART_ACCENTS.countries}
@@ -206,14 +233,22 @@
 						{/if}
 					</div>
 
-					<div class="wrapped-enter" style="animation-delay: 220ms">
+					<div
+						class="wrapped-enter"
+						style="animation-delay: 220ms"
+						onanimationend={clearEnterAnimation}
+					>
 						<WrappedMap
 							places={stats.visitedPlaces}
 							highlightCountryCodes={stats.countryBreakdown.map((entry) => entry.code)}
 						/>
 					</div>
 
-					<div class="wrapped-enter" style="animation-delay: 260ms">
+					<div
+						class="wrapped-enter"
+						style="animation-delay: 260ms"
+						onanimationend={clearEnterAnimation}
+					>
 						<WrappedShareCard year={wrappedFilters.year} {stats} />
 					</div>
 				{/if}

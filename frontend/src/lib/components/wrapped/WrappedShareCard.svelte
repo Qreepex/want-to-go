@@ -2,6 +2,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Panel from '$lib/components/ui/Panel.svelte';
 	import { siteName } from '$lib/config/site';
+	import { countryName } from '$lib/countries';
 	import { CATEGORICAL } from '$lib/dashboard/chartColors';
 	import type { WrappedStats } from '$lib/dashboard/wrapped';
 	import type { PlaceRecord } from '$lib/types';
@@ -35,6 +36,36 @@
 		const g = parseInt(value.slice(2, 4), 16);
 		const b = parseInt(value.slice(4, 6), 16);
 		return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+	}
+
+	// Flag emoji render as the bare ISO letters on Windows (no color-flag font
+	// support there), so flags are drawn from the same flag-icons SVGs the
+	// rest of the app uses instead, via ctx.drawImage.
+	const flagImages = new Map<string, HTMLImageElement | 'error'>();
+
+	function getFlagImage(code: string): HTMLImageElement | null {
+		if (code.length !== 2) {
+			return null;
+		}
+
+		const key = code.toLowerCase();
+		const cached = flagImages.get(key);
+
+		if (cached === 'error') {
+			return null;
+		}
+
+		if (cached) {
+			return cached.complete && cached.naturalWidth > 0 ? cached : null;
+		}
+
+		const image = new Image();
+		image.onload = () => draw();
+		image.onerror = () => flagImages.set(key, 'error');
+		image.src = `/flags/4x3/${key}.svg`;
+		flagImages.set(key, image);
+
+		return null;
 	}
 
 	function roundRect(
@@ -241,7 +272,8 @@
 		width: number,
 		height: number,
 		label: string,
-		value: string
+		value: string,
+		flagImage: HTMLImageElement | null = null
 	): void {
 		ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
 		roundRect(ctx, x, y, width, height, 32);
@@ -254,11 +286,27 @@
 		ctx.textBaseline = 'top';
 		ctx.fillText(label, x + paddingX, y + 34);
 
+		const textY = y + 100;
+		let textX = x + paddingX;
+
+		if (flagImage) {
+			const flagWidth = 60;
+			const flagHeight = 45;
+			const flagY = textY + 5;
+
+			ctx.save();
+			roundRect(ctx, textX, flagY, flagWidth, flagHeight, 6);
+			ctx.clip();
+			ctx.drawImage(flagImage, textX, flagY, flagWidth, flagHeight);
+			ctx.restore();
+			textX += flagWidth + 20;
+		}
+
 		ctx.font = `700 44px ${FONT}`;
 		ctx.fillStyle = '#f4efe6';
 		ctx.textBaseline = 'top';
-		const clipped = ellipsize(ctx, value, width - paddingX * 2);
-		ctx.fillText(clipped, x + paddingX, y + 100);
+		const clipped = ellipsize(ctx, value, x + width - paddingX - textX);
+		ctx.fillText(clipped, textX, textY);
 	}
 
 	function draw(): void {
@@ -362,8 +410,8 @@
 			cursorY,
 			halfWidth,
 			infoBadgeHeight,
-			'TOP COUNTRY',
-			stats.mostVisitedCountry?.code ?? '—'
+			'TOP CONTINENT',
+			stats.mostVisitedContinent?.name ?? '—'
 		);
 		drawInfoBadge(
 			ctx,
@@ -382,8 +430,9 @@
 			cursorY,
 			WIDTH - marginX * 2,
 			infoBadgeHeight,
-			'MOST VISITED PLACE',
-			stats.mostVisitedPlace?.place.name ?? '—'
+			'MOST VISITED COUNTRY',
+			stats.mostVisitedCountry ? countryName(stats.mostVisitedCountry.code) : '—',
+			stats.mostVisitedCountry ? getFlagImage(stats.mostVisitedCountry.code) : null
 		);
 		cursorY += infoBadgeHeight + 60;
 
@@ -399,15 +448,26 @@
 
 			topCountries.forEach((entry: { code: string; count: number }, index: number) => {
 				const rowCenterY = cursorY + rowHeight / 2;
+				const flagImage = getFlagImage(entry.code);
+				const flagWidth = 40;
+				const flagHeight = 30;
+
+				if (flagImage) {
+					ctx.save();
+					roundRect(ctx, marginX, rowCenterY - flagHeight / 2, flagWidth, flagHeight, 4);
+					ctx.clip();
+					ctx.drawImage(flagImage, marginX, rowCenterY - flagHeight / 2, flagWidth, flagHeight);
+					ctx.restore();
+				}
 
 				ctx.font = `600 30px ${FONT}`;
 				ctx.fillStyle = '#f4efe6';
 				ctx.textBaseline = 'middle';
 				ctx.textAlign = 'left';
-				ctx.fillText(entry.code, marginX, rowCenterY);
+				ctx.fillText(entry.code, marginX + flagWidth + 14, rowCenterY);
 
-				const trackX = marginX + 100;
-				const trackWidth = WIDTH - marginX * 2 - 100 - 80;
+				const trackX = marginX + 120;
+				const trackWidth = WIDTH - marginX * 2 - 120 - 80;
 				const barHeight = 18;
 				ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
 				roundRect(ctx, trackX, rowCenterY - barHeight / 2, trackWidth, barHeight, barHeight / 2);
